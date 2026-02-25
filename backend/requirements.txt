@@ -1,0 +1,23 @@
+# MemoryMap – Backend Requirements
+# Install with: pip install -r requirements.txt
+
+# API
+fastapi
+uvicorn[standard]
+python-multipart
+
+# Images
+pillow
+pillow-heif
+opencv-python
+
+# ML – face detection & recognition (must match notebook)
+face_recognition       # dlib-based, same as notebook cell 3
+scikit-learn           # SVM classifier, same as notebook cell 4
+
+# Cloudinary
+cloudinary
+
+# Utilities
+python-dotenv
+numpy

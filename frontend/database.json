@@ -1,0 +1,8 @@
+{
+    "owner": "username",
+    "clusters": {
+        "Outfit_1": ["url_pink_1.jpg", "url_pink_2.jpg"],
+        "Outfit_2": ["url_blue_1.jpg"]
+    },
+    "extras": ["scenery_1.jpg"]
+}
