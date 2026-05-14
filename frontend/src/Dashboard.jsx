@@ -410,27 +410,35 @@ function Dashboard({ username, setGlobalPhotos, onOpenEditorWithBook, onLogout }
         <div style={{ marginTop: '35px' }}>
           <h3 style={{ marginBottom: '15px' }}>Your Organized Events</h3>
 
-          {Object.keys(photos.clusters).map((key) => (
+          {Object.keys(photos.clusters).map((key) => {
+            // Handle both old format (array) and new format (object with photos)
+            const clusterData = photos.clusters[key];
+            const urls = Array.isArray(clusterData) ? clusterData : clusterData?.photos || [];
+            
+            if (!urls || urls.length === 0) return null;
+            
+            return (
             <div key={key} style={{ marginBottom: '25px', background: 'white', padding: '15px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>
               <h4 style={{ background: '#6c5ce7', color: 'white', padding: '8px 15px', borderRadius: '6px', marginBottom: '12px', display: 'inline-block' }}>
-                {key} ({photos.clusters[key].length} photos)
+                {key} ({urls.length} photos)
               </h4>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '10px' }}>
-                {photos.clusters[key].slice(0, 6).map((url, i) => (
+                {urls.slice(0, 6).map((url, i) => (
                   <img key={i} src={url} alt={`Event photo ${i + 1}`}
                     style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '8px', cursor: 'pointer', transition: 'transform 0.2s' }}
                     onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
                     onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
                   />
                 ))}
-                {photos.clusters[key].length > 6 && (
+                {urls.length > 6 && (
                   <div style={{ width: '100%', height: '150px', background: '#f0f0f0', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', color: '#666' }}>
-                    +{photos.clusters[key].length - 6} more
+                    +{urls.length - 6} more
                   </div>
                 )}
               </div>
             </div>
-          ))}
+            );
+          })}
 
           {photos.extras?.length > 0 && (
             <div style={{ marginBottom: '25px', background: 'white', padding: '15px', borderRadius: '12px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' }}>

@@ -18,6 +18,9 @@ scikit-learn           # SVM classifier, same as notebook cell 4
 # Cloudinary
 cloudinary
 
+# AI – Gemini API (using google-generativeai, will switch to google-genai in future)
+google-generativeai
+
 # Utilities
 python-dotenv
 numpy

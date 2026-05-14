@@ -45,9 +45,10 @@ def outfit_distance(sig1: np.ndarray, sig2: np.ndarray) -> float:
     return float(1.0 - dot)
 
 
-def is_same_outfit(sig1: np.ndarray, sig2: np.ndarray, threshold: float = 0.15) -> bool:
+def is_same_outfit(sig1: np.ndarray, sig2: np.ndarray, threshold: float = 0.35) -> bool:
     """
     threshold=0.15 → strict (same outfit)
     threshold=0.25 → loose (similar outfit)
+    threshold=0.35 → very loose (similar colors/tones) — ADJUSTED for better grouping
     """
     return outfit_distance(sig1, sig2) <= threshold

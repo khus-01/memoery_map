@@ -1,185 +1,1005 @@
 {
-    "undefined": {
-        "clusters": {
-            "Event_1": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783428/memorymap/uvlwklje7n37ydokvqat.jpg"
-            ],
-            "Event_2": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783446/memorymap/kcj4iljzvtimbyphqgwt.jpg"
-            ],
-            "Event_3": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783466/memorymap/by95rgu0t4s27btnbbyp.jpg",
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783510/memorymap/urd3j9wh8e9kboohzagm.jpg"
-            ],
-            "Event_4": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783526/memorymap/dkqh2t3rmcrikdueh2bh.jpg"
-            ]
-        },
-        "extras": [
-            "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783403/memorymap/yatukwnhgbg1w3xpf6ci.jpg",
-            "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783483/memorymap/vjbmdghkqpo3vghnt6tw.jpg",
-            "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783496/memorymap/bvpdxfxd35rnbgrzvioo.jpg"
-        ]
+  "undefined": {
+    "clusters": {
+      "Event_1": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783428/memorymap/uvlwklje7n37ydokvqat.jpg"
+      ],
+      "Event_2": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783446/memorymap/kcj4iljzvtimbyphqgwt.jpg"
+      ],
+      "Event_3": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783466/memorymap/by95rgu0t4s27btnbbyp.jpg",
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783510/memorymap/urd3j9wh8e9kboohzagm.jpg"
+      ],
+      "Event_4": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783526/memorymap/dkqh2t3rmcrikdueh2bh.jpg"
+      ]
     },
-    "khushi": {
-        "books": {
-            "book_a8f1ec8e": {
-                "id": "book_a8f1ec8e",
-                "name": "My First Book",
-                "created_at": "2026-02-25T19:06:17.560624",
-                "updated_at": "2026-02-25T19:06:17.560624",
-                "clusters": {
-                    "Event_1": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951646/memorymap/huncnarkm81vwhokxvxj.jpg"
-                    ],
-                    "Event_2": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951710/memorymap/okjwzg7uztbqjngeprzd.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951776/memorymap/ylpka1bzdhblmoclrohm.jpg"
-                    ],
-                    "Event_3": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951845/memorymap/o93bkvnmpzbj7muyayej.jpg"
-                    ],
-                    "Event_4": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951928/memorymap/croozen4ghfz89f5df85.jpg"
-                    ],
-                    "Event_5": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952011/memorymap/ve4kfxfm4mrrbm7d2xnl.jpg"
-                    ],
-                    "Event_6": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952069/memorymap/dzsupjot50k18r2whdoc.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952150/memorymap/dowwhsicukvjdhwmlvdc.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952214/memorymap/ivpgx1ykdglo9h4uadch.jpg"
-                    ],
-                    "Event_7": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952332/memorymap/gdymwuj8hlvvhfdddsts.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952382/memorymap/ikvbxuajsxju9obfdzd0.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952464/memorymap/tanducreszwonp6in8bc.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952535/memorymap/yb7xmduvvxtvvtnokj8m.jpg"
-                    ],
-                    "Event_8": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952624/memorymap/wyqswda83hrtdimvb4q7.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952674/memorymap/dr3hwzlieyau3shl8wdj.jpg"
-                    ]
-                },
-                "extras": [
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951744/memorymap/mxxgo9ky7hhi9hspbnti.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952264/memorymap/g8ghmvalr5dmxcgllahv.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952565/memorymap/ji8paregatfyr2gv8h3u.jpg"
-                ]
-            },
-            "book_a1bbcb92": {
-                "id": "book_a1bbcb92",
-                "name": "Book 2",
-                "created_at": "2026-02-25T19:06:36.472779",
-                "updated_at": "2026-02-25T19:06:48.552833",
-                "clusters": {
-                    "Event_1": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951928/memorymap/croozen4ghfz89f5df85.jpg"
-                    ],
-                    "Event_2": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952011/memorymap/ve4kfxfm4mrrbm7d2xnl.jpg"
-                    ],
-                    "Event_3": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952069/memorymap/dzsupjot50k18r2whdoc.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952150/memorymap/dowwhsicukvjdhwmlvdc.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952214/memorymap/ivpgx1ykdglo9h4uadch.jpg"
-                    ],
-                    "Event_4": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952332/memorymap/gdymwuj8hlvvhfdddsts.jpg"
-                    ]
-                },
-                "extras": [
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952264/memorymap/g8ghmvalr5dmxcgllahv.jpg"
-                ]
-            },
-            "book_dc0d645b": {
-                "id": "book_dc0d645b",
-                "name": "my km",
-                "created_at": "2026-02-25T19:34:12.347148",
-                "updated_at": "2026-02-25T19:34:58.575674",
-                "clusters": {},
-                "extras": [
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028261/memorymap/j8rjl2vzda9vbuft1ueu.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028276/memorymap/d3azhgjr2weo4y8zzklv.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028278/memorymap/dcrvjsgnogfykgcbd5gj.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028280/memorymap/lqwaakwsbk07lkcgtghm.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028283/memorymap/skv9g4fqjldu1xfn4hqz.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028285/memorymap/vtj3fghmr2bbfgpjchtr.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028287/memorymap/gq38kxgsezojhjh8zicz.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028290/memorymap/iv6jtcmilbt5tjycsq9q.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028293/memorymap/jxgnjs1omxdx0avr1wqs.jpg"
-                ]
-            },
-            "book_e1763217": {
-                "id": "book_e1763217",
-                "name": "non",
-                "created_at": "2026-02-25T19:35:33.192481",
-                "updated_at": "2026-02-25T19:36:52.888243",
-                "clusters": {
-                    "Event_1": [
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028340/memorymap/farusdm9e3l8y74dc8n4.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028350/memorymap/wkfxbwlryzfawxknwvlh.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028361/memorymap/igtl3bodggo6v6hmvska.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028375/memorymap/vefoaispwo7gnxx4uhns.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028386/memorymap/sca8pz4jja4k7cvspeoz.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028407/memorymap/bcf1jjfuafrbgdzyutqu.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028368/memorymap/trzpumhub9bgqhugmecb.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028378/memorymap/wwg6ge5h4ptqql68ps03.jpg",
-                        "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028381/memorymap/yd5ez4629cscy2ryfepj.jpg"
-                    ]
-                },
-                "extras": [
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028365/memorymap/pluqjj0ecimt9hirayey.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028390/memorymap/m6ctt2lscszidej30uxv.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028393/memorymap/d5zbwomld56iypxnazwq.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028397/memorymap/x6my2d4gf0znbtryyhyq.jpg",
-                    "https://res.cloudinary.com/djntk5qvd/image/upload/v1772028401/memorymap/aiuhun6uwofjwvfeu2qd.jpg"
-                ]
-            }
-        }
-    },
-    "bts": {
+    "extras": [
+      "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783403/memorymap/yatukwnhgbg1w3xpf6ci.jpg",
+      "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783483/memorymap/vjbmdghkqpo3vghnt6tw.jpg",
+      "https://res.cloudinary.com/djntk5qvd/image/upload/v1770783496/memorymap/bvpdxfxd35rnbgrzvioo.jpg"
+    ]
+  },
+  "khushi": {
+    "books": {
+      "book_e700cf3e": {
+        "id": "book_e700cf3e",
+        "name": "my",
+        "created_at": "2026-04-29T10:33:38.495218",
+        "updated_at": "2026-04-29T10:36:31.234726",
         "clusters": {
-            "Garden Outing": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678811/memorymap/z6muqagwvq0eogkv6fda.jpg"
+          "Blue Sky Day": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439038/memorymap/pwqawuxvchzoebczx6tc.jpg"
             ],
-            "Cloudy Day": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678858/memorymap/qzahblxvruwmlivusc3y.jpg"
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439038/memorymap/pwqawuxvchzoebczx6tc.jpg",
+            "best_photo_score": 0.724
+          },
+          "Garden Outing": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437270/memorymap/fxompmgfqakm7optfu21.jpg"
             ],
-            "Garden Outing 2": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678942/memorymap/db22qcyxr0rtywc60zje.jpg"
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437270/memorymap/fxompmgfqakm7optfu21.jpg",
+            "best_photo_score": 0.402
+          },
+          "Bright Moments": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437505/memorymap/etaalhs1w7jh6shvocar.jpg"
             ],
-            "Blue Sky Day": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679077/memorymap/nujkib7zeim9ilamiyry.jpg"
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437505/memorymap/etaalhs1w7jh6shvocar.jpg",
+            "best_photo_score": 0.357
+          },
+          "Garden Outing 2": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439073/memorymap/sefgjwh8y4rkvh13yxct.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439106/memorymap/lqvvhiauizh5whprcpv5.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437571/memorymap/lptmlgpsfzteuiicbwbl.jpg"
             ],
-            "Blue Sky Day 2": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679296/memorymap/xcytzs1fsez4eoyr8k7g.jpg"
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439106/memorymap/lqvvhiauizh5whprcpv5.jpg",
+            "best_photo_score": 0.984
+          },
+          "Garden Outing 3": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439109/memorymap/ezt2pya4fqu0gbcrtbxi.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439113/memorymap/quytxnvev8crjj20gr6o.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437574/memorymap/mab65r9l38qxov6lsqdo.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439117/memorymap/x6kus1ieqnny0zmgcly3.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439121/memorymap/dpqst2cnd2uf5oh7tijq.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437576/memorymap/w8js2mtg4g0gafak7j0u.jpg"
             ],
-            "Garden Outing 3": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679341/memorymap/qmox9ofwt9smlkf1copx.jpg"
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439117/memorymap/x6kus1ieqnny0zmgcly3.jpg",
+            "best_photo_score": 0.997
+          },
+          "Garden Outing 4": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439130/memorymap/dpdg9u23rrhhhw8mwwrj.jpg"
             ],
-            "Garden Outing 4": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679393/memorymap/bqefyj5lgkdnp2hagjuh.jpg",
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679461/memorymap/nlwl0vm0jsnbjpfd22k0.jpg",
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679534/memorymap/ty2wrv6gixiur6df9qrl.jpg"
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439130/memorymap/dpdg9u23rrhhhw8mwwrj.jpg",
+            "best_photo_score": 0.838
+          },
+          "Garden Outing 5": {
+            "photos": [
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439133/memorymap/xxmesaw8i1nxkhkvspyx.jpg",
+              "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437423/memorymap/tiu48nfd3ta6sjp6imcb.jpg"
             ],
-            "Garden Outing 5": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679721/memorymap/sdrobemldyu1rwlaszyk.jpg",
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679769/memorymap/cunq3qar65j0ndfilk5r.jpg",
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679829/memorymap/gs2ucpln33jwwihroomp.jpg",
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679883/memorymap/x1rh2zofmirfq6sq1y2a.jpg"
-            ],
-            "Garden Outing 6": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679942/memorymap/l8ulee0ta6i6xyqsvj6n.jpg"
-            ],
-            "Garden Outing 7": [
-                "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679981/memorymap/cgjs82wcsrf8rrdbfmi0.jpg"
-            ]
+            "best_photo": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439133/memorymap/xxmesaw8i1nxkhkvspyx.jpg",
+            "best_photo_score": 0.669
+          }
         },
-        "extras": [
-            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678901/memorymap/bz7esceersgoko9xrfh2.jpg",
-            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679654/memorymap/fx0sgjnjypcf4qha7ei1.jpg",
-            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679902/memorymap/o2x42yngvio8xbwgyqrs.jpg"
-        ]
+        "extras": []
+      }
     }
+  },
+  "bts": {
+    "clusters": {
+      "Garden Outing": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678811/memorymap/z6muqagwvq0eogkv6fda.jpg"
+      ],
+      "Cloudy Day": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678858/memorymap/qzahblxvruwmlivusc3y.jpg"
+      ],
+      "Garden Outing 2": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678942/memorymap/db22qcyxr0rtywc60zje.jpg"
+      ],
+      "Blue Sky Day": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679077/memorymap/nujkib7zeim9ilamiyry.jpg"
+      ],
+      "Blue Sky Day 2": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679296/memorymap/xcytzs1fsez4eoyr8k7g.jpg"
+      ],
+      "Garden Outing 3": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679341/memorymap/qmox9ofwt9smlkf1copx.jpg"
+      ],
+      "Garden Outing 4": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679393/memorymap/bqefyj5lgkdnp2hagjuh.jpg",
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679461/memorymap/nlwl0vm0jsnbjpfd22k0.jpg",
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679534/memorymap/ty2wrv6gixiur6df9qrl.jpg"
+      ],
+      "Garden Outing 5": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679721/memorymap/sdrobemldyu1rwlaszyk.jpg",
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679769/memorymap/cunq3qar65j0ndfilk5r.jpg",
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679829/memorymap/gs2ucpln33jwwihroomp.jpg",
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679883/memorymap/x1rh2zofmirfq6sq1y2a.jpg"
+      ],
+      "Garden Outing 6": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679942/memorymap/l8ulee0ta6i6xyqsvj6n.jpg"
+      ],
+      "Garden Outing 7": [
+        "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679981/memorymap/cgjs82wcsrf8rrdbfmi0.jpg"
+      ]
+    },
+    "extras": [
+      "https://res.cloudinary.com/djntk5qvd/image/upload/v1771678901/memorymap/bz7esceersgoko9xrfh2.jpg",
+      "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679654/memorymap/fx0sgjnjypcf4qha7ei1.jpg",
+      "https://res.cloudinary.com/djntk5qvd/image/upload/v1771679902/memorymap/o2x42yngvio8xbwgyqrs.jpg"
+    ]
+  },
+  "Sridevi": {
+    "books": {
+      "book_ac9fb785": {
+        "id": "book_ac9fb785",
+        "name": "Book 1",
+        "created_at": "2026-03-18T12:57:49.480165",
+        "updated_at": "2026-03-18T13:00:21.701127",
+        "clusters": {
+          "Event_1": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1773818981/memorymap/ein39twte7v8ghxuwvuk.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951646/memorymap/huncnarkm81vwhokxvxj.jpg"
+          ],
+          "Event_2": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951710/memorymap/okjwzg7uztbqjngeprzd.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951776/memorymap/ylpka1bzdhblmoclrohm.jpg"
+          ],
+          "Event_3": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951845/memorymap/o93bkvnmpzbj7muyayej.jpg"
+          ],
+          "Event_4": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951928/memorymap/croozen4ghfz89f5df85.jpg"
+          ],
+          "Event_5": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952011/memorymap/ve4kfxfm4mrrbm7d2xnl.jpg"
+          ],
+          "Event_6": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952069/memorymap/dzsupjot50k18r2whdoc.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952150/memorymap/dowwhsicukvjdhwmlvdc.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952214/memorymap/ivpgx1ykdglo9h4uadch.jpg"
+          ],
+          "Event_7": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952332/memorymap/gdymwuj8hlvvhfdddsts.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952382/memorymap/ikvbxuajsxju9obfdzd0.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952464/memorymap/tanducreszwonp6in8bc.jpg",
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952535/memorymap/yb7xmduvvxtvvtnokj8m.jpg"
+          ],
+          "Event_8": [
+            "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952624/memorymap/wyqswda83hrtdimvb4q7.jpg"
+          ]
+        },
+        "extras": [
+          "https://res.cloudinary.com/djntk5qvd/image/upload/v1771951744/memorymap/mxxgo9ky7hhi9hspbnti.jpg",
+          "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952264/memorymap/g8ghmvalr5dmxcgllahv.jpg",
+          "https://res.cloudinary.com/djntk5qvd/image/upload/v1771952565/memorymap/ji8paregatfyr2gv8h3u.jpg"
+        ]
+      }
+    }
+  },
+  "book_progress": {
+    "khushi_book_8f156aa4": {
+      "username": "khushi",
+      "book_id": "book_8f156aa4",
+      "pages": [
+        {
+          "id": 1011,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775436692/memorymap/jw8g104yd1bsbnwacuzk.jpg"
+          },
+          "texts": [
+            {
+              "id": 1010,
+              "content": "Event_6",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        }
+      ],
+      "updated_at": "2026-04-07T15:01:39.825360",
+      "status": "draft"
+    },
+    "khushi_book_836cef44": {
+      "username": "khushi",
+      "book_id": "book_836cef44",
+      "pages": [
+        {
+          "id": 1775554552068,
+          "layoutKey": "blank",
+          "photos": {},
+          "texts": [],
+          "stickers": [],
+          "bgColor": "#ffffff"
+        }
+      ],
+      "updated_at": "2026-04-07T15:05:54.145453",
+      "status": "draft"
+    },
+    "khushi_book_14665e75": {
+      "username": "khushi",
+      "book_id": "book_14665e75",
+      "pages": [
+        {
+          "id": 1011,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555153/memorymap/ysiivgfmfj6vcuseu7zu.jpg"
+          },
+          "texts": [
+            {
+              "id": 1010,
+              "content": "Garden Outing",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1012,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555201/memorymap/jgifxfmsvuhzkfl8oimp.jpg"
+          },
+          "texts": [],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1014,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555170/memorymap/v5kdniurpezmhhqjgpdw.jpg"
+          },
+          "texts": [
+            {
+              "id": 1013,
+              "content": "Garden Outing 2",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1016,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555189/memorymap/sqkwqmmp4bvhecmgbbfi.jpg"
+          },
+          "texts": [
+            {
+              "id": 1015,
+              "content": "More Memories",
+              "x": 5,
+              "y": 5,
+              "fontSize": 18,
+              "color": "#555555",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#fdf8f0"
+        }
+      ],
+      "updated_at": "2026-04-07T15:48:37.049333",
+      "status": "draft"
+    },
+    "khushi_book_4f4a27a5": {
+      "username": "khushi",
+      "book_id": "book_4f4a27a5",
+      "pages": [
+        {
+          "id": 1001,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555608/memorymap/laqsetnfgsoxkiellzgm.jpg"
+          },
+          "texts": [
+            {
+              "id": 1000,
+              "content": "Garden Outing",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1003,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555649/memorymap/kdwck0ofnhdagqrg1gmd.jpg"
+          },
+          "texts": [
+            {
+              "id": 1002,
+              "content": "Bright Moments",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1005,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555682/memorymap/lpsfxcajklvixujwr6xv.jpg"
+          },
+          "texts": [
+            {
+              "id": 1004,
+              "content": "Garden Outing 2",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1007,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555723/memorymap/oxdvtwkhfooshk1lixms.jpg"
+          },
+          "texts": [
+            {
+              "id": 1006,
+              "content": "Garden Outing 3",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1009,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555742/memorymap/kvug6k9azyavcg47160g.jpg"
+          },
+          "texts": [
+            {
+              "id": 1008,
+              "content": "Garden Outing 4",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        }
+      ],
+      "updated_at": "2026-04-08T10:01:32.841221",
+      "status": "draft"
+    },
+    "khushi_book_92fb9c6a": {
+      "username": "khushi",
+      "book_id": "book_92fb9c6a",
+      "pages": [
+        {
+          "id": 1001,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557164/memorymap/hmfdgeblazqkpdt9grst.jpg"
+          },
+          "texts": [
+            {
+              "id": 1000,
+              "content": "Garden Outing",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1003,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557181/memorymap/f08er3cgn8cix7swvaan.jpg"
+          },
+          "texts": [
+            {
+              "id": 1002,
+              "content": "Blue Sky Day",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1005,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557208/memorymap/wkpfzgluftbnjh2hhvg2.jpg"
+          },
+          "texts": [
+            {
+              "id": 1004,
+              "content": "Warm Evening",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1007,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557235/memorymap/scbnjt3jfjtuvhyjh1kz.jpg"
+          },
+          "texts": [
+            {
+              "id": 1006,
+              "content": "Garden Outing 2",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1010,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557227/memorymap/zgxb48fbbnznppqdi885.jpg"
+          },
+          "texts": [
+            {
+              "id": 1009,
+              "content": "More Memories",
+              "x": 5,
+              "y": 5,
+              "fontSize": 18,
+              "color": "#555555",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#fdf8f0"
+        },
+        {
+          "id": 1775621189653,
+          "layoutKey": "magazine",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557229/memorymap/dyaxglixorvk4ozw1pgm.jpg",
+            "1": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557254/memorymap/savrps5rzvszquqbakea.jpg",
+            "2": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557232/memorymap/biquueqvxrexvoqxdzuq.jpg"
+          },
+          "texts": [],
+          "stickers": [],
+          "bgColor": "#ffffff"
+        }
+      ],
+      "updated_at": "2026-04-27T14:30:16.828022",
+      "status": "draft"
+    },
+    "khushi_book_5b17c096": {
+      "username": "khushi",
+      "book_id": "book_5b17c096",
+      "pages": [
+        {
+          "id": 1001,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557181/memorymap/f08er3cgn8cix7swvaan.jpg"
+          },
+          "texts": [
+            {
+              "id": 1000,
+              "content": "Blue Sky Day",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1003,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555608/memorymap/laqsetnfgsoxkiellzgm.jpg"
+          },
+          "texts": [
+            {
+              "id": 1002,
+              "content": "Garden Outing",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1007,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557229/memorymap/dyaxglixorvk4ozw1pgm.jpg"
+          },
+          "texts": [
+            {
+              "id": 1006,
+              "content": "Garden Outing 3",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1009,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775557254/memorymap/savrps5rzvszquqbakea.jpg"
+          },
+          "texts": [
+            {
+              "id": 1008,
+              "content": "Garden Outing 4",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1011,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1775555742/memorymap/kvug6k9azyavcg47160g.jpg"
+          },
+          "texts": [
+            {
+              "id": 1010,
+              "content": "Garden Outing 5",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1775624655051,
+          "layoutKey": "blank",
+          "photos": {},
+          "texts": [],
+          "stickers": [],
+          "bgColor": "#ffffff"
+        }
+      ],
+      "updated_at": "2026-04-27T14:30:06.065593",
+      "status": "draft"
+    },
+    "khushi_book_683039f6": {
+      "username": "khushi",
+      "book_id": "book_683039f6",
+      "pages": [
+        {
+          "id": 1777282678348,
+          "layoutKey": "blank",
+          "photos": {},
+          "texts": [],
+          "stickers": [],
+          "bgColor": "#ffffff"
+        }
+      ],
+      "updated_at": "2026-04-27T15:08:00.370773",
+      "status": "draft"
+    },
+    "khushi_book_c62bd835": {
+      "username": "khushi",
+      "book_id": "book_c62bd835",
+      "pages": [
+        {
+          "id": 1001,
+          "layoutKey": "threeVertical",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437505/memorymap/etaalhs1w7jh6shvocar.jpg",
+            "1": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437571/memorymap/lptmlgpsfzteuiicbwbl.jpg",
+            "2": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437574/memorymap/mab65r9l38qxov6lsqdo.jpg"
+          },
+          "texts": [
+            {
+              "id": 1000,
+              "content": "Garden Outing",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            },
+            {
+              "id": 1,
+              "content": "Double-click to edit",
+              "x": 10,
+              "y": 10,
+              "fontSize": 20,
+              "color": "#333333",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            },
+            {
+              "id": 1,
+              "content": "Double-click to edit",
+              "x": 10,
+              "y": 10,
+              "fontSize": 20,
+              "color": "#333333",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1777436111425,
+          "layoutKey": "twoHorizontal",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777436035/memorymap/js8bham3apzg00c1jb29.jpg",
+            "1": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777436051/memorymap/mr8onsgkdmycizpyfyi5.jpg"
+          },
+          "texts": [
+            {
+              "id": 6,
+              "content": "Double-click to\n\u00a0edit",
+              "x": 10,
+              "y": 10,
+              "fontSize": 20,
+              "color": "#333333",
+              "fontFamily": "Playfair Display",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [
+            {
+              "id": 2,
+              "content": "\u2600\ufe0f",
+              "x": 80,
+              "y": 5,
+              "size": 42,
+              "rotation": 0
+            },
+            {
+              "id": 3,
+              "content": "\u2764\ufe0f",
+              "x": 2.6666666666666714,
+              "y": 50.375,
+              "size": 42,
+              "rotation": 0
+            }
+          ],
+          "bgColor": "#bf360c"
+        }
+      ],
+      "updated_at": "2026-04-29T10:33:17.955700",
+      "status": "draft"
+    },
+    "khushi_book_e700cf3e": {
+      "username": "khushi",
+      "book_id": "book_e700cf3e",
+      "pages": [
+        {
+          "id": 1001,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439038/memorymap/pwqawuxvchzoebczx6tc.jpg"
+          },
+          "texts": [
+            {
+              "id": 1000,
+              "content": "Blue Sky Day",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1003,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437576/memorymap/w8js2mtg4g0gafak7j0u.jpg"
+          },
+          "texts": [
+            {
+              "id": 1002,
+              "content": "Garden Outing",
+              "x": 15.013908205841446,
+              "y": 24.749652294853963,
+              "fontSize": 72,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1005,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437505/memorymap/etaalhs1w7jh6shvocar.jpg"
+          },
+          "texts": [
+            {
+              "id": 1004,
+              "content": "Bright Moments",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1007,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439073/memorymap/sefgjwh8y4rkvh13yxct.jpg"
+          },
+          "texts": [
+            {
+              "id": 1006,
+              "content": "Garden Outing 2",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1009,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439109/memorymap/ezt2pya4fqu0gbcrtbxi.jpg"
+          },
+          "texts": [
+            {
+              "id": 1008,
+              "content": "Garden Outing 3",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1013,
+          "layoutKey": "heroFull",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439133/memorymap/xxmesaw8i1nxkhkvspyx.jpg"
+          },
+          "texts": [
+            {
+              "id": 1012,
+              "content": "Garden Outing 5",
+              "x": 5,
+              "y": 5,
+              "fontSize": 26,
+              "color": "#ffffff",
+              "fontFamily": "Georgia",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [],
+          "bgColor": "#1a1a2e"
+        },
+        {
+          "id": 1777445521352,
+          "layoutKey": "travel",
+          "photos": {
+            "0": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439073/memorymap/sefgjwh8y4rkvh13yxct.jpg",
+            "1": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777437574/memorymap/mab65r9l38qxov6lsqdo.jpg",
+            "2": "https://res.cloudinary.com/djntk5qvd/image/upload/v1777439117/memorymap/x6kus1ieqnny0zmgcly3.jpg"
+          },
+          "texts": [
+            {
+              "id": 2,
+              "content": "Double-click to edit",
+              "x": 73.42141863699582,
+              "y": 57.8442280945758,
+              "fontSize": 38,
+              "color": "#b63535",
+              "fontFamily": "Impact",
+              "bold": false,
+              "italic": false,
+              "align": "left"
+            }
+          ],
+          "stickers": [
+            {
+              "id": 3,
+              "content": "\ud83d\udc95",
+              "x": 12.23922114047288,
+              "y": 36.99582753824757,
+              "size": 42,
+              "rotation": 0
+            }
+          ],
+          "bgColor": "#bf360c"
+        }
+      ],
+      "updated_at": "2026-04-29T14:48:42.304368",
+      "status": "draft"
+    }
+  }
 }

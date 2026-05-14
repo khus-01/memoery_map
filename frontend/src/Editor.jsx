@@ -2,39 +2,38 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import AutoGenerateModal from './AutoGenerateModal';
+import { api, apiRoutes } from './api';
 
-/* ─── LAYOUT DEFINITIONS (% of page) ───────────────────────────────────────── */
 const PAD = 3.3, GAP = 1.7;
 const IW = 100 - PAD * 2, IH = 100 - PAD * 2;
-
 const col2w = (IW - GAP) / 2;
 const col3w = (IW - GAP * 2) / 3;
 const row2h = (IH - GAP) / 2;
-const row3h = (IH - GAP * 2) / 3;
 
 const LAYOUTS = {
-  blank:         { name: 'Blank',         icon: '📄', zones: [] },
-  heroFull:      { name: 'Full Page',      icon: '🖼️', zones: [{ x:PAD, y:PAD, w:IW, h:IH }] },
-  twoVertical:   { name: 'Side by Side',   icon: '▯▯', zones: [
-    { x:PAD,            y:PAD, w:col2w, h:IH },
-    { x:PAD+col2w+GAP,  y:PAD, w:col2w, h:IH },
+  blank:         { name: 'Blank',        icon: '📄', zones: [] },
+  heroFull:      { name: 'Full Page',     icon: '🖼️', zones: [{ x:PAD, y:PAD, w:IW, h:IH }] },
+  twoVertical:   { name: 'Side by Side',  icon: '▯▯', zones: [
+    { x:PAD,           y:PAD, w:col2w, h:IH },
+    { x:PAD+col2w+GAP, y:PAD, w:col2w, h:IH },
   ]},
-  twoHorizontal: { name: 'Top & Bottom',   icon: '▬▬', zones: [
-    { x:PAD, y:PAD,            w:IW, h:row2h },
-    { x:PAD, y:PAD+row2h+GAP,  w:IW, h:row2h },
+  twoHorizontal: { name: 'Top & Bottom',  icon: '▬▬', zones: [
+    { x:PAD, y:PAD,           w:IW, h:row2h },
+    { x:PAD, y:PAD+row2h+GAP, w:IW, h:row2h },
   ]},
-  threeVertical: { name: 'Three Columns',  icon: '▯▯▯', zones: [
+  threeVertical: { name: 'Three Columns', icon: '▯▯▯', zones: [
     { x:PAD,               y:PAD, w:col3w, h:IH },
     { x:PAD+col3w+GAP,     y:PAD, w:col3w, h:IH },
     { x:PAD+col3w*2+GAP*2, y:PAD, w:col3w, h:IH },
   ]},
-  fourGrid:      { name: 'Four Grid',      icon: '⊞', zones: [
+  fourGrid: { name: 'Four Grid', icon: '⊞', zones: [
     { x:PAD,           y:PAD,           w:col2w, h:row2h },
     { x:PAD+col2w+GAP, y:PAD,           w:col2w, h:row2h },
     { x:PAD,           y:PAD+row2h+GAP, w:col2w, h:row2h },
     { x:PAD+col2w+GAP, y:PAD+row2h+GAP, w:col2w, h:row2h },
   ]},
-  sixGrid:       { name: 'Six Grid',       icon: '⊟', zones: [
+  sixGrid: { name: 'Six Grid', icon: '⊟', zones: [
     { x:PAD,               y:PAD,           w:col3w, h:row2h },
     { x:PAD+col3w+GAP,     y:PAD,           w:col3w, h:row2h },
     { x:PAD+col3w*2+GAP*2, y:PAD,           w:col3w, h:row2h },
@@ -42,114 +41,136 @@ const LAYOUTS = {
     { x:PAD+col3w+GAP,     y:PAD+row2h+GAP, w:col3w, h:row2h },
     { x:PAD+col3w*2+GAP*2, y:PAD+row2h+GAP, w:col3w, h:row2h },
   ]},
-  magazine:      { name: 'Magazine',       icon: '📰', zones: [
-    { x:PAD,              y:PAD, w:IW*0.6-GAP/2, h:IH },
-    { x:PAD+IW*0.6+GAP/2, y:PAD, w:IW*0.4-GAP/2, h:row2h },
+  magazine: { name: 'Magazine', icon: '📰', zones: [
+    { x:PAD,              y:PAD,           w:IW*0.6-GAP/2, h:IH },
+    { x:PAD+IW*0.6+GAP/2, y:PAD,           w:IW*0.4-GAP/2, h:row2h },
     { x:PAD+IW*0.6+GAP/2, y:PAD+row2h+GAP, w:IW*0.4-GAP/2, h:row2h },
   ]},
-  travel:        { name: 'Travel Story',   icon: '✈️', zones: [
-    { x:PAD, y:PAD,             w:IW,    h:IH*0.45-GAP/2 },
+  travel: { name: 'Travel Story', icon: '✈️', zones: [
+    { x:PAD,               y:PAD,               w:IW,    h:IH*0.45-GAP/2 },
     { x:PAD,               y:PAD+IH*0.45+GAP/2, w:col3w, h:IH*0.55-GAP/2 },
     { x:PAD+col3w+GAP,     y:PAD+IH*0.45+GAP/2, w:col3w, h:IH*0.55-GAP/2 },
     { x:PAD+col3w*2+GAP*2, y:PAD+IH*0.45+GAP/2, w:col3w, h:IH*0.55-GAP/2 },
   ]},
-  instagram:     { name: 'Insta Grid',     icon: '📱', zones: [
-    { x:PAD, y:PAD,             w:IW,    h:IH*0.65-GAP/2 },
+  instagram: { name: 'Insta Grid', icon: '📱', zones: [
+    { x:PAD,               y:PAD,               w:IW,    h:IH*0.65-GAP/2 },
     { x:PAD,               y:PAD+IH*0.65+GAP/2, w:col3w, h:IH*0.35-GAP/2 },
     { x:PAD+col3w+GAP,     y:PAD+IH*0.65+GAP/2, w:col3w, h:IH*0.35-GAP/2 },
     { x:PAD+col3w*2+GAP*2, y:PAD+IH*0.65+GAP/2, w:col3w, h:IH*0.35-GAP/2 },
   ]},
-  scrapbook:     { name: 'Scrapbook',      icon: '✂️', zones: [
-    { x:PAD,       y:PAD,   w:44, h:43 },
-    { x:53,        y:PAD+2, w:40, h:38 },
-    { x:PAD+2,     y:50,    w:38, h:47 },
-    { x:54,        y:52,    w:43, h:45 },
+  scrapbook: { name: 'Scrapbook', icon: '✂️', zones: [
+    { x:PAD,   y:PAD,   w:44, h:43 },
+    { x:53,    y:PAD+2, w:40, h:38 },
+    { x:PAD+2, y:50,    w:38, h:47 },
+    { x:54,    y:52,    w:43, h:45 },
   ]},
 };
 
 const PAGE_W = 600, PAGE_H = 800;
 
 const newPage = (id) => ({
-  id,
-  layoutKey: 'blank',
-  photos: {},
-  texts: [],
-  bgColor: '#ffffff',
+  id, layoutKey: 'blank', photos: {}, texts: [], stickers: [], bgColor: '#ffffff',
 });
 
-/* ══════════════════════════════════════════════════════════════════════════════
-   MAIN EDITOR
-══════════════════════════════════════════════════════════════════════════════ */
-// ── CHANGE 1: accept bookId prop ──────────────────────────────────────────────
+const mapAILayout = (layoutStr) => {
+  const map = {
+    'single':       'heroFull',
+    'two-column':   'twoVertical',
+    'two-vertical': 'twoVertical',
+    'three-mixed':  'magazine',
+    'grid-2x2':     'fourGrid',
+    'four-grid':    'fourGrid',
+  };
+  return map[layoutStr] || 'heroFull';
+};
+
+let _nextId = 1000;
+const aiPageToEditorPage = (aiPage) => {
+  const layoutKey = mapAILayout(aiPage.layout || 'single');
+  const zones = LAYOUTS[layoutKey]?.zones || [];
+  const photos = {};
+  (aiPage.photos || []).forEach((url, i) => { if (i < zones.length) photos[i] = url; });
+  const texts = (aiPage.texts || []).map(t => ({
+    id: _nextId++, content: t.content || '', x: t.x || 10, y: t.y || 10,
+    fontSize: t.fontSize || 18, color: t.color || '#333333',
+    fontFamily: 'Georgia', bold: false, italic: false, align: 'left',
+  }));
+  const stickers = (aiPage.stickers || []).map((emoji, i) => ({
+    id: _nextId++, content: emoji,
+    x: 75 + (i % 2) * 10, y: 10 + (i * 15) % 60, size: 42, rotation: 0,
+  }));
+  return {
+    id: _nextId++, layoutKey, photos, texts, stickers,
+    bgColor: aiPage.bg_color || '#ffffff',
+  };
+};
+
+const toolbarBtn = (extra = {}) => ({
+  padding: '6px 12px', fontSize: 12, background: '#1a2744',
+  border: '1px solid #0f3460', color: '#fff', borderRadius: 6,
+  cursor: 'pointer', whiteSpace: 'nowrap', ...extra,
+});
+const miniBtn = (extra = {}) => ({
+  background: 'transparent', border: 'none', color: '#a0aec0',
+  cursor: 'pointer', fontSize: 12, padding: 0, ...extra,
+});
+const labelStyle = { display: 'block', fontSize: 10, color: '#a0aec0', marginBottom: 2 };
+const selStyle = {
+  width: '100%', padding: '4px 6px', fontSize: 11,
+  background: '#0f3460', border: '1px solid #2d4a7a',
+  color: '#fff', borderRadius: 4, marginBottom: 6,
+};
+
+const FONTS = [
+  'Georgia', 'Playfair Display', 'Arial', 'Courier New',
+  'Impact', 'Verdana', 'Trebuchet MS', 'Times New Roman',
+];
+
+const STICKER_CATEGORIES = {
+  hearts:   { name: 'Hearts',   items: ['❤️','💕','💖','💗','💓','💝','💘','💞'] },
+  flowers:  { name: 'Flowers',  items: ['🌸','🌺','🌻','🌼','🌷','🌹','💐','🌿','🍃','🌱','☘️','🍀','🌾','🌵','🌴','🌲'] },
+  sparkles: { name: 'Sparkles', items: ['✨','⭐','🌟','💫','⚡','☀️','🌙','🌈','☁️','🌤️','🌞','🌝','🌛','🌜','🔆','🌠'] },
+  cute:     { name: 'Cute',     items: ['🎀','🎁','🎈','🎊','🎉','🎂','🧁','🍰','🍓','🍒','🍑','🍊','🍋','🍌','🍉','🍇'] },
+  animals:  { name: 'Animals',  items: ['🐱','🐶','🐰','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🦊','🦋','🐝','🐞'] },
+  travel:   { name: 'Travel',   items: ['✈️','🚗','🚢','🎡','🎢','🏰','🗼','🗽','🏖️','🏝️','⛺','🏕️','🗻','🏔️','🌋','⛰️'] },
+  objects:  { name: 'Objects',  items: ['📷','📸','🎨','🖌️','✏️','📝','💌','📮','🎵','🎶','🎸','🎹','📚','📖','🔖','📎'] },
+  symbols:  { name: 'Symbols',  items: ['💎','💍','👑','🔮','🎭','🎪','🎬','🎯','💝','🔥','💧','💨','🌊','🌀','🎆','🎇'] },
+};
+
+const BG_PATTERNS = [
+  { label: 'White',     value: '#ffffff' },
+  { label: 'Cream',     value: '#fdf8f0' },
+  { label: 'Black',     value: '#1a1a1a' },
+  { label: 'Navy',      value: '#1e3a5f' },
+  { label: 'Blush',     value: '#fce4ec' },
+  { label: 'Sage',      value: '#e8f5e9' },
+  { label: 'Lavender',  value: '#f3e5f5' },
+  { label: 'Warm Grey', value: '#f5f5f0' },
+  { label: 'Slate',     value: '#546e7a' },
+  { label: 'Rust',      value: '#bf360c' },
+  { label: 'Gold',      value: '#f9a825' },
+  { label: 'Forest',    value: '#2e7d32' },
+];
+
 export default function PhotoEditor({ username, bookId, onBackToDashboard }) {
-  const [allPhotos,    setAllPhotos]    = useState({ clusters: {}, extras: [] });
-  const [pages,        setPages]        = useState([newPage(Date.now())]);
-  const [activePage,   setActivePage]   = useState(0);
-  const [showLayouts,  setShowLayouts]  = useState(false);
-  const [selectedText, setSelectedText] = useState(null);
-  const [scale,        setScale]        = useState(1);
-  const [bgMode,       setBgMode]       = useState('color');
-  const [showBgPanel,  setShowBgPanel]  = useState(false);
-  const [showStickers, setShowStickers] = useState(false);
+  const [allPhotos,     setAllPhotos]     = useState({ clusters: {}, extras: [] });
+  const [pages,         setPages]         = useState([newPage(Date.now())]);
+  const [activePage,    setActivePage]    = useState(0);
+  const [showLayouts,   setShowLayouts]   = useState(false);
+  const [selectedText,  setSelectedText]  = useState(null);
+  const [scale,         setScale]         = useState(1);
+  const [showBgPanel,   setShowBgPanel]   = useState(false);
+  const [showStickers,  setShowStickers]  = useState(false);
+  const [showAutoModal, setShowAutoModal] = useState(false);
+  const [generating,    setGenerating]    = useState(false);
+  const [isSaving,      setIsSaving]      = useState(false);
+  const [lastSaved,     setLastSaved]     = useState(null);
 
   const pageRef       = useRef(null);
   const canvasAreaRef = useRef(null);
   const nextId        = useRef(1);
   const activePageRef = useRef(0);
 
-  const FONTS = ['Georgia', 'Playfair Display', 'Arial', 'Courier New', 'Impact', 'Verdana', 'Trebuchet MS', 'Times New Roman'];
-
-  const STICKER_CATEGORIES = {
-    hearts: {
-      name: '💕 Hearts & Love',
-      items: ['❤️', '💕', '💖', '💗', '💓', '💝', '💘', '💞'],
-    },
-    flowers: {
-      name: '🌸 Flowers & Nature',
-      items: ['🌸', '🌺', '🌻', '🌼', '🌷', '🌹', '🏵️', '💐', '🌿', '🍃', '🌱', '☘️', '🍀', '🌾', '🌵', '🌴'],
-    },
-    sparkles: {
-      name: '✨ Sparkles & Magic',
-      items: ['✨', '⭐', '🌟', '💫', '⚡', '🔆', '☀️', '🌙', '⛅', '🌈', '☁️', '🌤️', '🌞', '🌝', '🌛', '🌜'],
-    },
-    cute: {
-      name: '🎀 Cute & Kawaii',
-      items: ['🎀', '🎁', '🎈', '🎊', '🎉', '🎂', '🧁', '🍰', '🍓', '🍒', '🍑', '🍊', '🍋', '🍌', '🍉', '🍇'],
-    },
-    animals: {
-      name: '🐾 Animals & Pets',
-      items: ['🐱', '🐶', '🐰', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🦊', '🦋', '🐝', '🐞'],
-    },
-    travel: {
-      name: '✈️ Travel & Adventure',
-      items: ['✈️', '🚗', '🚢', '🎡', '🎢', '🏰', '🗼', '🗽', '🏖️', '🏝️', '⛺', '🏕️', '🗻', '🏔️', '🌋', '⛰️'],
-    },
-    objects: {
-      name: '📷 Objects & Items',
-      items: ['📷', '📸', '🎨', '🖌️', '✏️', '📝', '💌', '📮', '🎵', '🎶', '🎸', '🎹', '📚', '📖', '🔖', '📎'],
-    },
-    symbols: {
-      name: '💎 Symbols & Shapes',
-      items: ['💎', '💍', '👑', '🔮', '🎭', '🎪', '🎬', '🎯', '💝', '🔥', '💧', '💨', '🌊', '🌀', '🎆', '🎇'],
-    },
-  };
-
-  const BG_PATTERNS = [
-    { label: 'White',      value: '#ffffff' },
-    { label: 'Cream',      value: '#fdf8f0' },
-    { label: 'Black',      value: '#1a1a1a' },
-    { label: 'Navy',       value: '#1e3a5f' },
-    { label: 'Blush',      value: '#fce4ec' },
-    { label: 'Sage',       value: '#e8f5e9' },
-    { label: 'Lavender',   value: '#f3e5f5' },
-    { label: 'Warm Grey',  value: '#f5f5f0' },
-    { label: 'Slate',      value: '#546e7a' },
-    { label: 'Rust',       value: '#bf360c' },
-    { label: 'Gold',       value: '#f9a825' },
-    { label: 'Forest',     value: '#2e7d32' },
-  ];
-
-  // Auto-scale
   useEffect(() => {
     const measure = () => {
       if (!canvasAreaRef.current) return;
@@ -162,87 +183,106 @@ export default function PhotoEditor({ username, bookId, onBackToDashboard }) {
     return () => window.removeEventListener('resize', measure);
   }, []);
 
-  // ── CHANGE 2: fetch specific book if bookId is given ──────────────────────
   useEffect(() => {
-    if (bookId) {
-      axios.get(`http://127.0.0.1:8000/books/${username}/${bookId}`)
-        .then(r => {
+    const init = async () => {
+      try {
+        if (bookId) {
+          const r = await axios.get(`http://127.0.0.1:8000/books/${username}/${bookId}`);
           const book = r.data?.book || {};
-          setAllPhotos({
-            clusters: book.clusters || {},
-            extras:   book.extras   || [],
-          });
-        })
-        .catch(() => {});
-    } else {
-      // Fallback: load latest book (legacy)
-      axios.get(`http://127.0.0.1:8000/photos/${username}`)
-        .then(r => setAllPhotos(r.data))
-        .catch(() => {});
-    }
+          setAllPhotos({ clusters: book.clusters || {}, extras: book.extras || [] });
+        } else {
+          const r = await axios.get(`http://127.0.0.1:8000/photos/${username}`);
+          setAllPhotos(r.data);
+        }
+      } catch (e) { console.error('Photo load error', e); }
+      try {
+        const res = await api.get(apiRoutes.loadProgress(username, bookId));
+        if (res.data.pages?.length > 0) { setPages(res.data.pages); return; }
+      } catch (e) { /* no saved progress */ }
+      setShowAutoModal(true);
+    };
+    init();
   }, [username, bookId]);
+
+  useEffect(() => {
+    if (!pages || pages.length === 0) return;
+    const timer = setTimeout(async () => {
+      setIsSaving(true);
+      try {
+        await api.post(apiRoutes.saveProgress, { username, book_id: bookId, pages });
+        setLastSaved(new Date().toLocaleTimeString());
+      } catch (e) { console.error('Autosave failed', e); }
+      setIsSaving(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [pages]);
 
   const page = pages[activePage] || pages[0];
   activePageRef.current = activePage;
 
   const updatePage = useCallback((fn) => {
-    setPages(prev => prev.map((p, i) => i === activePageRef.current ? { ...fn(p) } : p));
+    setPages(prev => prev.map((p, i) => (i === activePageRef.current ? { ...fn(p) } : p)));
   }, []);
 
-  /* ── Layout ── */
   const applyLayout = useCallback((key) => {
     updatePage(p => ({ ...p, layoutKey: key, photos: {} }));
     setShowLayouts(false);
   }, [updatePage]);
 
-  /* ── Photos ── */
-  const dropIntoZone = useCallback((zi, url) => {
-    updatePage(p => ({ ...p, photos: { ...p.photos, [zi]: url } }));
+  const addPage = () => {
+    const id = Date.now() + nextId.current++;
+    setPages(prev => [...prev, newPage(id)]);
+    setActivePage(prev => prev + 1);
+  };
+
+  const deletePage = (idx) => {
+    if (pages.length === 1) return;
+    setPages(prev => prev.filter((_, i) => i !== idx));
+    setActivePage(prev => Math.min(prev, pages.length - 2));
+  };
+
+    const duplicatePage = (idx) => {
+    const copy = { ...pages[idx], id: Date.now() + nextId.current++ };
+    setPages(prev => {
+      const next = [...prev];
+      next.splice(idx + 1, 0, copy);
+      return next;
+    });
+    setActivePage(idx + 1);
+  };
+
+  const handleDrop = useCallback((e, zoneIdx) => {
+    e.preventDefault();
+    const url = e.dataTransfer.getData('text/plain');
+    if (!url) return;
+    updatePage(p => ({ ...p, photos: { ...p.photos, [zoneIdx]: url } }));
   }, [updatePage]);
 
-  /* ── Text ── */
-  const addText = useCallback(() => {
-    const id = nextId.current++;
-    const newText = {
-      id,
-      content: 'Your text here',
-      x: 10, y: 40,
-      fontSize: 24,
-      color: '#111111',
-      fontFamily: 'Georgia',
-      bold: false,
-      italic: false,
-      align: 'left',
-    };
-    updatePage(p => ({ ...p, texts: [...(p.texts || []), newText] }));
-    setTimeout(() => setSelectedText(id), 50);
+  const handleDragOver = (e) => { e.preventDefault(); };
+
+  const removePhoto = useCallback((zoneIdx) => {
+    updatePage(p => {
+      const photos = { ...p.photos };
+      delete photos[zoneIdx];
+      return { ...p, photos };
+    });
   }, [updatePage]);
 
-  /* ── Stickers ── */
-  const addSticker = useCallback((emoji, x = 20, y = 20) => {
+  const addText = () => {
     const id = nextId.current++;
     updatePage(p => ({
       ...p,
-      stickers: [...(p.stickers || []), { id, content: emoji, x, y, size: 48, rotation: 0 }],
+      texts: [...(p.texts || []), {
+        id, content: 'Double-click to edit', x: 10, y: 10,
+        fontSize: 20, color: '#333333', fontFamily: 'Georgia',
+        bold: false, italic: false, align: 'left',
+      }],
     }));
-  }, [updatePage]);
-
-  const updateSticker = useCallback((id, changes) => {
-    updatePage(p => ({
-      ...p,
-      stickers: (p.stickers || []).map(s => s.id === id ? { ...s, ...changes } : s),
-    }));
-  }, [updatePage]);
-
-  const deleteSticker = useCallback((id) => {
-    updatePage(p => ({ ...p, stickers: (p.stickers || []).filter(s => s.id !== id) }));
-  }, [updatePage]);
+    setSelectedText(id);
+  };
 
   const updateText = useCallback((id, changes) => {
-    updatePage(p => ({
-      ...p,
-      texts: (p.texts || []).map(t => t.id === id ? { ...t, ...changes } : t),
-    }));
+    updatePage(p => ({ ...p, texts: (p.texts || []).map(t => t.id === id ? { ...t, ...changes } : t) }));
   }, [updatePage]);
 
   const deleteText = useCallback((id) => {
@@ -250,649 +290,363 @@ export default function PhotoEditor({ username, bookId, onBackToDashboard }) {
     setSelectedText(null);
   }, [updatePage]);
 
-  /* ── Pages ── */
-  const addPage = useCallback(() => {
-    setPages(prev => [...prev, newPage(Date.now())]);
-    setActivePage(prev => prev + 1);
-  }, []);
+  const addSticker = (emoji) => {
+    const id = nextId.current++;
+    updatePage(p => ({
+      ...p,
+      stickers: [...(p.stickers || []), { id, content: emoji, x: 80, y: 5, size: 42, rotation: 0 }],
+    }));
+  };
 
-  const duplicatePage = useCallback(() => {
-    const copy = {
-      ...page,
-      id: Date.now(),
-      texts: (page.texts || []).map(t => ({ ...t, id: nextId.current++ })),
-    };
-    setPages(prev => [...prev.slice(0, activePage + 1), copy, ...prev.slice(activePage + 1)]);
-    setActivePage(activePage + 1);
-  }, [page, activePage]);
-
-  const deletePage = useCallback((idx) => {
-    setPages(prev => {
-      if (prev.length === 1) return prev;
-      const next = prev.filter((_, i) => i !== idx);
-      setActivePage(ap => Math.min(ap, next.length - 1));
-      return next;
-    });
-  }, []);
-
-  /* ── Background ── */
-  const setBg = useCallback((color) => {
-    updatePage(p => ({ ...p, bgColor: color }));
+  const updateSticker = useCallback((id, changes) => {
+    updatePage(p => ({ ...p, stickers: (p.stickers || []).map(s => s.id === id ? { ...s, ...changes } : s) }));
   }, [updatePage]);
 
-  /* ── Export ── */
+  const deleteSticker = useCallback((id) => {
+    updatePage(p => ({ ...p, stickers: (p.stickers || []).filter(s => s.id !== id) }));
+  }, [updatePage]);
+
+  const setBgColor = (color) => { updatePage(p => ({ ...p, bgColor: color })); };
+
+  const handleAutoGenerate = async () => {
+    setGenerating(true);
+    try {
+      const res = await api.post(apiRoutes.autoGenerate(username, bookId));
+      if (res.data?.pages?.length > 0) {
+        setPages(res.data.pages.map(aiPageToEditorPage));
+        setActivePage(0);
+      }
+    } catch (e) { console.error('Auto-generate failed', e); }
+    setGenerating(false);
+    setShowAutoModal(false);
+  };
+
   const exportPNG = async () => {
     if (!pageRef.current) return;
-    const canvas = await html2canvas(pageRef.current, {
-      scale: 2, useCORS: true, allowTaint: true,
-      width: PAGE_W, height: PAGE_H,
-    });
+    const el = pageRef.current;
+    const orig = el.style.transform;
+    
+    // Hide delete buttons before export
+    const deleteButtons = el.querySelectorAll('button');
+    const origDisplays = Array.from(deleteButtons).map(btn => btn.style.display);
+    deleteButtons.forEach(btn => btn.style.display = 'none');
+    
+    el.style.transform = 'none';
+    const canvas = await html2canvas(el, { scale: 3, useCORS: true, allowTaint: true });
+    el.style.transform = orig;
+    
+    // Restore delete buttons
+    deleteButtons.forEach((btn, i) => btn.style.display = origDisplays[i]);
+    
     const a = document.createElement('a');
+    a.download = `page-${activePage + 1}.png`;
     a.href = canvas.toDataURL('image/png');
-    a.download = `page${activePage + 1}.png`;
     a.click();
   };
 
   const exportPDF = async () => {
-    const pdf = new jsPDF({ unit: 'px', format: [PAGE_W, PAGE_H] });
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: [PAGE_W, PAGE_H] });
+    const el = pageRef.current;
+    if (!el) return;
     for (let i = 0; i < pages.length; i++) {
       setActivePage(i);
-      await new Promise(r => setTimeout(r, 400));
-      if (!pageRef.current) continue;
-      const canvas = await html2canvas(pageRef.current, {
-        scale: 2, useCORS: true, allowTaint: true,
-        width: PAGE_W, height: PAGE_H,
-      });
-      if (i > 0) pdf.addPage([PAGE_W, PAGE_H]);
+      await new Promise(r => setTimeout(r, 300));
+      
+      // Hide delete buttons before export
+      const deleteButtons = el.querySelectorAll('button');
+      const origDisplays = Array.from(deleteButtons).map(btn => btn.style.display);
+      deleteButtons.forEach(btn => btn.style.display = 'none');
+      
+      const orig = el.style.transform;
+      el.style.transform = 'none';
+      const canvas = await html2canvas(el, { scale: 2, useCORS: true, allowTaint: true });
+      el.style.transform = orig;
+      
+      // Restore delete buttons
+      deleteButtons.forEach((btn, idx) => btn.style.display = origDisplays[idx]);
+      
+      if (i > 0) pdf.addPage();
       pdf.addImage(canvas.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, PAGE_W, PAGE_H);
     }
-    pdf.save('photobook.pdf');
+    pdf.save('memorymap-book.pdf');
   };
 
-  const selText = (page.texts || []).find(t => t.id === selectedText);
-  const totalPhotos = Object.values(allPhotos.clusters || {}).reduce((s, a) => s + a.length, 0)
-    + (allPhotos.extras?.length || 0);
+  const textEditingRef = useRef(null);
+
+  const makeDraggable = (item, onMove) => {
+    let startX, startY, startIX, startIY;
+    const onMouseMove = (e) => {
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      onMove(
+        Math.max(0, Math.min(95, startIX + (dx / (PAGE_W * scale)) * 100)),
+        Math.max(0, Math.min(95, startIY + (dy / (PAGE_H * scale)) * 100))
+      );
+    };
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    return (e) => {
+      if (textEditingRef.current === e.currentTarget) return; // Don't drag while editing
+      e.preventDefault();
+      startX = e.clientX; startY = e.clientY;
+      startIX = item.x;   startIY = item.y;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    };
+  };
+
+  const selText = (page?.texts || []).find(x => x.id === selectedText);
 
   return (
-    <div style={S.root}>
+    <div style={{ display: 'flex', height: '100vh', fontFamily: 'sans-serif', background: '#1a1a2e', color: '#fff' }}>
 
-      {/* ══════════ SIDEBAR ══════════ */}
-      <div style={S.sidebar}>
-        <button style={Sb('dark', { width: '100%', marginBottom: 12 })} onClick={onBackToDashboard}>← Back</button>
+      {showAutoModal && (
+        <AutoGenerateModal
+          onGenerate={handleAutoGenerate}
+          onSkip={() => setShowAutoModal(false)}
+          generating={generating}
+        />
+      )}
 
-        {/* ── Photos ── */}
-        <div style={{ borderBottom: '1px solid #e2e8f0', paddingBottom: 12, marginBottom: 12 }}>
-          <div style={S.sideHead}>📸 Photos ({totalPhotos})</div>
-          <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 8 }}>Drag into layout zones</div>
+      {/* LEFT SIDEBAR */}
+      <div style={{ width: 220, background: '#16213e', borderRight: '1px solid #0f3460', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+        <div style={{ padding: '14px 12px 8px', borderBottom: '1px solid #0f3460' }}>
+          <button onClick={onBackToDashboard} style={{ background: 'transparent', color: '#a0aec0', border: 'none', cursor: 'pointer', fontSize: 13, marginBottom: 8, padding: 0 }}>← Back</button>
+          <div style={{ fontWeight: 700, fontSize: 15 }}>📸 Photo Library</div>
+        </div>
+        {Object.entries(allPhotos.clusters || {}).map(([event, clusterData]) => {
+          // Handle both old format (array) and new format (object with photos)
+          const urls = Array.isArray(clusterData) ? clusterData : clusterData?.photos || [];
+          if (!urls || urls.length === 0) return null;
+          
+          return (
+          <div key={event}>
+            <div style={{ padding: '8px 12px', fontSize: 12, fontWeight: 600, color: '#63b3ed', borderBottom: '1px solid #0f3460', background: '#1a2744' }}>{event}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, padding: 8 }}>
+              {urls.map((url, i) => (
+                <img key={i} src={url} alt="" draggable
+                  onDragStart={e => e.dataTransfer.setData('text/plain', url)}
+                  style={{ width: 88, height: 66, objectFit: 'cover', borderRadius: 4, cursor: 'grab', border: '2px solid transparent' }}
+                  onMouseOver={e => e.currentTarget.style.borderColor = '#63b3ed'}
+                  onMouseOut={e  => e.currentTarget.style.borderColor = 'transparent'}
+                />
+              ))}
+            </div>
+          </div>
+          );
+        })}
+        {(allPhotos.extras || []).length > 0 && (
+          <div>
+            <div style={{ padding: '8px 12px', fontSize: 12, fontWeight: 600, color: '#a0aec0', borderBottom: '1px solid #0f3460', background: '#1a2744' }}>📦 Extras</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, padding: 8 }}>
+              {allPhotos.extras.map((url, i) => (
+                <img key={i} src={url} alt="" draggable
+                  onDragStart={e => e.dataTransfer.setData('text/plain', url)}
+                  style={{ width: 88, height: 66, objectFit: 'cover', borderRadius: 4, cursor: 'grab', border: '2px solid transparent' }}
+                  onMouseOver={e => e.currentTarget.style.borderColor = '#a0aec0'}
+                  onMouseOut={e  => e.currentTarget.style.borderColor = 'transparent'}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
-          {Object.keys(allPhotos.clusters || {}).map(k => (
-            <div key={k} style={{ marginBottom: 12 }}>
-              <div style={S.clusterBadge}>{k}</div>
-              <div style={S.thumbGrid}>
-                {allPhotos.clusters[k].map((url, i) => (
-                  <img key={i} src={url} alt="" style={S.thumb}
-                    draggable
-                    onDragStart={e => e.dataTransfer.setData('text/plain', url)}
-                  />
+      {/* CENTER */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+
+        {/* TOOLBAR */}
+        <div style={{ background: '#16213e', borderBottom: '1px solid #0f3460', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+
+          <div style={{ position: 'relative' }}>
+            <button onClick={() => setShowLayouts(v => !v)} style={toolbarBtn()}>🔲 Layout</button>
+            {showLayouts && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, background: '#1a2744', border: '1px solid #0f3460', borderRadius: 8, padding: 8, display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 4, width: 260 }}>
+                {Object.entries(LAYOUTS).map(([key, lay]) => (
+                  <button key={key} onClick={() => applyLayout(key)}
+                    style={{ background: page?.layoutKey === key ? '#0f3460' : 'transparent', border: '1px solid #0f3460', borderRadius: 6, color: '#fff', cursor: 'pointer', padding: '6px 4px', fontSize: 11, textAlign: 'center' }}>
+                    {lay.icon} {lay.name}
+                  </button>
                 ))}
               </div>
-            </div>
-          ))}
+            )}
+          </div>
 
-          {allPhotos.extras?.length > 0 && (
-            <div style={{ marginBottom: 12 }}>
-              <div style={{ ...S.clusterBadge, background: '#64748b' }}>Extras</div>
-              <div style={S.thumbGrid}>
-                {allPhotos.extras.map((url, i) => (
-                  <img key={i} src={url} alt="" style={S.thumb}
-                    draggable
-                    onDragStart={e => e.dataTransfer.setData('text/plain', url)}
-                  />
+          <button onClick={addText} style={toolbarBtn()}>✏️ Text</button>
+
+          <div style={{ position: 'relative' }}>
+            <button onClick={() => setShowStickers(v => !v)} style={toolbarBtn()}>😊 Stickers</button>
+            {showStickers && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, background: '#1a2744', border: '1px solid #0f3460', borderRadius: 8, padding: 10, width: 320, maxHeight: 360, overflowY: 'auto' }}>
+                {Object.entries(STICKER_CATEGORIES).map(([catKey, cat]) => (
+                  <div key={catKey} style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 11, color: '#a0aec0', marginBottom: 4 }}>{cat.name}</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                      {cat.items.map(emoji => (
+                        <button key={emoji} onClick={() => { addSticker(emoji); setShowStickers(false); }}
+                          style={{ background: 'transparent', border: 'none', fontSize: 22, cursor: 'pointer', padding: 2, borderRadius: 4 }}
+                          onMouseOver={e => e.currentTarget.style.background = '#0f3460'}
+                          onMouseOut={e  => e.currentTarget.style.background = 'transparent'}
+                        >{emoji}</button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          <div style={{ position: 'relative' }}>
+            <button onClick={() => setShowBgPanel(v => !v)} style={toolbarBtn()}>🎨 Background</button>
+            {showBgPanel && (
+              <div style={{ position: 'absolute', top: '100%', left: 0, zIndex: 100, background: '#1a2744', border: '1px solid #0f3460', borderRadius: 8, padding: 10, width: 240 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+                  {BG_PATTERNS.map(p => (
+                    <button key={p.value} onClick={() => { setBgColor(p.value); setShowBgPanel(false); }} title={p.label}
+                      style={{ width: 32, height: 32, background: p.value, border: page?.bgColor === p.value ? '2px solid #63b3ed' : '2px solid rgba(255,255,255,0.2)', borderRadius: 6, cursor: 'pointer' }} />
+                  ))}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
+                  <span>Custom:</span>
+                  <input type="color" value={page?.bgColor || '#ffffff'} onChange={e => setBgColor(e.target.value)}
+                    style={{ width: 40, height: 28, border: 'none', cursor: 'pointer' }} />
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div style={{ flex: 1 }} />
+          <span style={{ fontSize: 11, color: isSaving ? '#f6e05e' : '#68d391' }}>
+            {isSaving ? '💾 Saving…' : lastSaved ? `✓ Saved ${lastSaved}` : ''}
+          </span>
+          <button onClick={() => setShowAutoModal(true)} style={toolbarBtn({ background: '#553c9a', borderColor: '#805ad5' })}>🤖 AI Generate</button>
+          <button onClick={exportPNG} style={toolbarBtn()}>⬇ PNG</button>
+          <button onClick={exportPDF} style={toolbarBtn({ background: '#2d3748' })}>📄 PDF</button>
         </div>
 
-        {/* ── Text Properties Panel ── */}
-        {selText ? (
-          <div style={S.textPanel}>
-            <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10, color: '#1e293b', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              ✏️ Edit Text
-              <button style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 16, color: '#94a3b8', padding: 0 }}
-                onClick={() => setSelectedText(null)}>×</button>
-            </div>
+        {/* CANVAS */}
+        <div ref={canvasAreaRef}
+          style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', background: '#0d1117' }}
+          onClick={() => { setShowLayouts(false); setShowBgPanel(false); setShowStickers(false); }}
+        >
+          <div ref={pageRef}
+            style={{ width: PAGE_W, height: PAGE_H, background: page?.bgColor || '#ffffff', position: 'relative', overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.6)', transform: `scale(${scale})`, transformOrigin: 'center center', flexShrink: 0 }}
+          >
+            {(LAYOUTS[page?.layoutKey]?.zones || []).map((zone, zi) => (
+              <div key={zi} onDrop={e => handleDrop(e, zi)} onDragOver={handleDragOver}
+                style={{ position: 'absolute', left: `${zone.x}%`, top: `${zone.y}%`, width: `${zone.w}%`, height: `${zone.h}%`, border: page?.photos?.[zi] ? 'none' : '2px dashed #ccc', background: page?.photos?.[zi] ? 'transparent' : 'rgba(200,200,200,0.08)', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+              >
+                {page?.photos?.[zi] ? (
+                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                    <img src={page.photos[zi]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                    <button onClick={() => removePhoto(zi)}
+                      style={{ position: 'absolute', top: 4, right: 4, background: 'rgba(0,0,0,0.6)', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, cursor: 'pointer', fontSize: 12, lineHeight: 1 }}
+                      onMouseOver={e => e.currentTarget.style.opacity = '1'}
+                      onMouseOut={e  => e.currentTarget.style.opacity = '0.6'}
+                    >×</button>
+                  </div>
+                ) : (
+                  <span style={{ color: '#aaa', fontSize: 13, userSelect: 'none' }}>Drop photo</span>
+                )}
+              </div>
+            ))}
 
-            <label style={S.lbl}>Content</label>
-            <textarea
-              value={selText.content}
-              onChange={e => updateText(selText.id, { content: e.target.value })}
-              style={S.textarea}
-              rows={3}
-              onMouseDown={e => e.stopPropagation()}
-            />
+            {(page?.texts || []).map(t => (
+              <div key={t.id}
+                ref={selectedText === t.id ? textEditingRef : null}
+                onMouseDown={makeDraggable(t, (x, y) => updateText(t.id, { x, y }))}
+                onClick={e => { e.stopPropagation(); setSelectedText(t.id); }}
+                onDoubleClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedText(t.id);
+                  textEditingRef.current = e.currentTarget;
+                  setTimeout(() => e.currentTarget?.focus(), 0);
+                }}
+                contentEditable suppressContentEditableWarning
+                onFocus={() => { textEditingRef.current = null; }}
+                onBlur={(e) => {
+                  updateText(t.id, { content: e.currentTarget.innerText });
+                  textEditingRef.current = null;
+                }}
+                style={{ position: 'absolute', left: `${t.x}%`, top: `${t.y}%`, fontSize: t.fontSize, color: t.color, fontFamily: t.fontFamily, fontWeight: t.bold ? 'bold' : 'normal', fontStyle: t.italic ? 'italic' : 'normal', textAlign: t.align, cursor: selectedText === t.id ? 'text' : 'move', userSelect: 'text', outline: selectedText === t.id ? '2px dashed #63b3ed' : 'none', padding: 2, maxWidth: '80%' }}
+              >{t.content}</div>
+            ))}
 
-            <label style={S.lbl}>Font Family</label>
-            <select value={selText.fontFamily}
-              onChange={e => updateText(selText.id, { fontFamily: e.target.value })}
-              style={S.sel}
-              onMouseDown={e => e.stopPropagation()}>
+            {(page?.stickers || []).map(s => (
+              <div key={s.id}
+                onMouseDown={makeDraggable(s, (x, y) => updateSticker(s.id, { x, y }))}
+                onDoubleClick={() => deleteSticker(s.id)}
+                title="Double-click to remove"
+                style={{ position: 'absolute', left: `${s.x}%`, top: `${s.y}%`, fontSize: s.size, cursor: 'move', userSelect: 'none', transform: `rotate(${s.rotation}deg)`, lineHeight: 1 }}
+              >{s.content}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT PANEL */}
+      <div style={{ width: 200, background: '#16213e', borderLeft: '1px solid #0f3460', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        {selText && (
+          <div style={{ padding: 12, borderBottom: '1px solid #0f3460' }}>
+            <div style={{ fontSize: 12, fontWeight: 600, marginBottom: 8, color: '#63b3ed' }}>✏️ Text</div>
+            <label style={labelStyle}>Font</label>
+            <select value={selText.fontFamily} onChange={e => updateText(selText.id, { fontFamily: e.target.value })} style={selStyle}>
               {FONTS.map(f => <option key={f} value={f}>{f}</option>)}
             </select>
-
-            <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-              <div style={{ flex: 1 }}>
-                <label style={S.lbl}>Size</label>
-                <input type="number" min={8} max={150} value={selText.fontSize}
-                  onChange={e => updateText(selText.id, { fontSize: Math.max(8, +e.target.value) })}
-                  onMouseDown={e => e.stopPropagation()}
-                  style={{ ...S.sel, width: '100%' }} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <label style={S.lbl}>Color</label>
-                <input type="color" value={selText.color}
-                  onChange={e => updateText(selText.id, { color: e.target.value })}
-                  onMouseDown={e => e.stopPropagation()}
-                  style={{ width: '100%', height: 36, border: '1px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', padding: 2 }} />
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
-              {[
-                { label: 'B', prop: 'bold',   active: selText.bold,   style: { fontWeight: 700 } },
-                { label: 'I', prop: 'italic', active: selText.italic, style: { fontStyle: 'italic' } },
-              ].map(({ label, prop, active, style }) => (
-                <button key={prop}
-                  onMouseDown={e => { e.stopPropagation(); updateText(selText.id, { [prop]: !active }); }}
-                  style={{ ...Sb(active ? 'purple' : 'ghost'), flex: 1, ...style }}>
-                  {label}
-                </button>
-              ))}
-
+            <label style={labelStyle}>Size</label>
+            <input type="range" min={8} max={80} value={selText.fontSize} onChange={e => updateText(selText.id, { fontSize: +e.target.value })} style={{ width: '100%', marginBottom: 6 }} />
+            <label style={labelStyle}>Color</label>
+            <input type="color" value={selText.color} onChange={e => updateText(selText.id, { color: e.target.value })} style={{ width: '100%', height: 28, border: 'none', cursor: 'pointer', marginBottom: 6 }} />
+            <label style={labelStyle}>Align</label>
+            <div style={{ display: 'flex', gap: 4, marginBottom: 6 }}>
               {['left', 'center', 'right'].map(a => (
-                <button key={a}
-                  onMouseDown={e => { e.stopPropagation(); updateText(selText.id, { align: a }); }}
-                  style={{ ...Sb(selText.align === a ? 'purple' : 'ghost'), flex: 1, fontSize: 14 }}>
-                  {a === 'left' ? '⫷' : a === 'center' ? '≡' : '⫸'}
+                <button key={a} onClick={() => updateText(selText.id, { align: a })}
+                  style={{ flex: 1, padding: '3px 0', fontSize: 12, background: selText.align === a ? '#0f3460' : 'transparent', border: '1px solid #0f3460', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>
+                  {a[0].toUpperCase()}
                 </button>
               ))}
             </div>
-
-            <button
-              onMouseDown={e => { e.stopPropagation(); deleteText(selText.id); }}
-              style={Sb('danger', { width: '100%', marginTop: 10 })}>
+            <div style={{ display: 'flex', gap: 4, marginBottom: 8 }}>
+              <button onClick={() => updateText(selText.id, { bold: !selText.bold })}
+                style={{ flex: 1, padding: '3px 0', fontSize: 12, fontWeight: 'bold', background: selText.bold ? '#0f3460' : 'transparent', border: '1px solid #0f3460', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>B</button>
+              <button onClick={() => updateText(selText.id, { italic: !selText.italic })}
+                style={{ flex: 1, padding: '3px 0', fontSize: 12, fontStyle: 'italic', background: selText.italic ? '#0f3460' : 'transparent', border: '1px solid #0f3460', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>I</button>
+            </div>
+            <button onClick={() => deleteText(selText.id)}
+              style={{ width: '100%', padding: '4px 0', fontSize: 12, background: '#742a2a', border: 'none', color: '#fff', borderRadius: 4, cursor: 'pointer' }}>
               🗑 Delete Text
             </button>
           </div>
-        ) : (
-          <div style={{ fontSize: 12, color: '#94a3b8', textAlign: 'center', padding: '8px 0' }}>
-            Click a text element to edit it
-          </div>
         )}
-      </div>
-
-      {/* ══════════ MAIN ══════════ */}
-      <div style={S.main}>
-
-        {/* ── TOOLBAR ── */}
-        <div style={S.toolbar}>
-          <button style={Sb('purple')} onClick={() => setShowLayouts(true)}>📐 Layouts</button>
-          <button style={Sb('green')}  onClick={addText}>✏️ Text</button>
-          <button style={Sb('pink')}   onClick={() => setShowStickers(true)}>🎨 Stickers</button>
-          <button style={Sb(showBgPanel ? 'purple' : 'ghost')} onClick={() => setShowBgPanel(v => !v)}>
-            🎨 Background
-          </button>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
-            <button style={Sb('blue')}   onClick={exportPNG}>💾 PNG</button>
-            <button style={Sb('orange')} onClick={exportPDF}>📄 PDF ({pages.length}p)</button>
-          </div>
-        </div>
-
-        {/* ── BACKGROUND PANEL ── */}
-        {showBgPanel && (
-          <div style={S.bgPanel}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: '#475569', marginRight: 10 }}>Page Background:</span>
-            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-              {BG_PATTERNS.map(b => (
-                <div key={b.value}
-                  onClick={() => setBg(b.value)}
-                  title={b.label}
-                  style={{
-                    width: 28, height: 28, borderRadius: 6,
-                    background: b.value,
-                    border: page.bgColor === b.value ? '3px solid #6c5ce7' : '2px solid #e2e8f0',
-                    cursor: 'pointer', flexShrink: 0,
-                  }} />
-              ))}
-              <div style={{ position: 'relative' }}>
-                <input type="color" value={page.bgColor}
-                  onChange={e => setBg(e.target.value)}
-                  title="Custom color"
-                  style={{ width: 28, height: 28, border: '2px solid #e2e8f0', borderRadius: 6, cursor: 'pointer', padding: 0 }} />
-              </div>
-              <span style={{ fontSize: 11, color: '#94a3b8' }}>Custom ↑</span>
-            </div>
-          </div>
-        )}
-
-        {/* ── PAGE TABS ── */}
-        <div style={S.pageTabs}>
-          <span style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginRight: 8 }}>Pages:</span>
-
+        <div style={{ flex: 1, overflowY: 'auto', padding: 8 }}>
+          <div style={{ fontSize: 12, color: '#a0aec0', marginBottom: 8, fontWeight: 600 }}>Pages ({pages.length})</div>
           {pages.map((p, i) => (
-            <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-              <button
-                onClick={() => setActivePage(i)}
-                style={{
-                  padding: '4px 12px', border: 'none',
-                  borderRadius: i === activePage ? '6px 6px 0 0' : 6,
-                  background: i === activePage ? '#6c5ce7' : '#f1f5f9',
-                  color: i === activePage ? 'white' : '#475569',
-                  cursor: 'pointer', fontSize: 12,
-                  fontWeight: i === activePage ? 700 : 500,
-                  borderBottom: i === activePage ? '2px solid #6c5ce7' : 'none',
-                }}>
-                {i + 1}
-              </button>
-              {pages.length > 1 && (
-                <button onClick={() => deletePage(i)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#cbd5e1', fontSize: 14, padding: '0 3px', lineHeight: 1 }}>
-                  ×
-                </button>
-              )}
+            <div key={p.id} onClick={() => { setActivePage(i); setSelectedText(null); }}
+              style={{ marginBottom: 8, cursor: 'pointer', borderRadius: 6, border: i === activePage ? '2px solid #63b3ed' : '2px solid #0f3460', background: '#1a2744', overflow: 'hidden' }}
+            >
+              <div style={{ width: '100%', aspectRatio: `${PAGE_W}/${PAGE_H}`, background: p.bgColor || '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {Object.values(p.photos || {}).length > 0
+                  ? <img src={Object.values(p.photos)[0]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: '#888', fontSize: 10 }}>Pg {i + 1}</span>
+                }
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 6px', fontSize: 10, color: '#a0aec0' }}>
+                <span>{i + 1}</span>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <button onClick={e => { e.stopPropagation(); duplicatePage(i); }} style={miniBtn()} title="Duplicate">⧉</button>
+                  <button onClick={e => { e.stopPropagation(); deletePage(i); }} style={miniBtn({ color: '#fc8181' })} title="Delete">✕</button>
+                </div>
+              </div>
             </div>
           ))}
-
           <button onClick={addPage}
-            style={{ padding: '4px 10px', border: '2px dashed #cbd5e1', borderRadius: 6, background: 'transparent', cursor: 'pointer', fontSize: 12, color: '#94a3b8', marginLeft: 4 }}>
+            style={{ width: '100%', padding: '8px 0', fontSize: 13, background: '#1a2744', border: '1px dashed #0f3460', color: '#63b3ed', borderRadius: 6, cursor: 'pointer' }}>
             + Add Page
           </button>
-
-          <button onClick={duplicatePage}
-            style={{ padding: '4px 10px', border: '1px solid #e2e8f0', borderRadius: 6, background: 'white', cursor: 'pointer', fontSize: 12, color: '#64748b', marginLeft: 4 }}>
-            ⧉ Duplicate
-          </button>
-
-          <span style={{ marginLeft: 'auto', fontSize: 11, color: '#94a3b8' }}>
-            {pages.length} page{pages.length > 1 ? 's' : ''} in book
-          </span>
-        </div>
-
-        {/* ── CANVAS ── */}
-        <div ref={canvasAreaRef} style={S.canvasArea}
-          onMouseDown={e => { if (e.target === e.currentTarget || e.target === canvasAreaRef.current) setSelectedText(null); }}>
-          <div style={{
-            transform: `scale(${scale})`,
-            transformOrigin: 'top center',
-            marginBottom: scale < 1 ? `${PAGE_H * (scale - 1)}px` : 0,
-            flexShrink: 0,
-          }}>
-            <div ref={pageRef} style={{ ...S.page, background: page.bgColor }}
-              onMouseDown={e => { if (e.target === e.currentTarget) setSelectedText(null); }}>
-
-              {/* ZONES */}
-              {(LAYOUTS[page.layoutKey]?.zones || []).map((z, zi) => {
-                const photoUrl = page.photos?.[zi];
-                return (
-                  <div key={zi}
-                    onDragOver={e => e.preventDefault()}
-                    onDrop={e => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const url = e.dataTransfer.getData('text/plain');
-                      if (url) dropIntoZone(zi, url);
-                    }}
-                    style={{
-                      position: 'absolute',
-                      left: `${z.x}%`, top: `${z.y}%`,
-                      width: `${z.w}%`, height: `${z.h}%`,
-                      overflow: 'hidden', boxSizing: 'border-box',
-                      border: photoUrl ? 'none' : '2px dashed #d1d5db',
-                      background: photoUrl ? 'transparent' : '#f9fafb',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      cursor: photoUrl ? 'default' : 'copy',
-                    }}>
-                    {photoUrl ? (
-                      <img src={photoUrl} alt=""
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', pointerEvents: 'none' }}
-                      />
-                    ) : (
-                      <div style={{ textAlign: 'center', color: '#d1d5db', userSelect: 'none', pointerEvents: 'none' }}>
-                        <div style={{ fontSize: 32 }}>📷</div>
-                        <div style={{ fontSize: 12, marginTop: 4 }}>Photo {zi + 1}</div>
-                        <div style={{ fontSize: 10 }}>drag here</div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-
-              {/* TEXT ELEMENTS */}
-              {(page.texts || []).map(t => (
-                <TextElement key={t.id} text={t}
-                  isSelected={selectedText === t.id}
-                  onSelect={id => setSelectedText(id)}
-                  updateText={updateText}
-                  scale={scale}
-                />
-              ))}
-
-              {/* STICKER ELEMENTS */}
-              {(page.stickers || []).map(s => (
-                <StickerElement key={s.id} sticker={s}
-                  updateSticker={updateSticker}
-                  deleteSticker={deleteSticker}
-                  scale={scale}
-                />
-              ))}
-
-              {/* Empty state hint */}
-              {page.layoutKey === 'blank' && (page.texts || []).length === 0 && (
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#e2e8f0', pointerEvents: 'none' }}>
-                  <div style={{ fontSize: 56 }}>📖</div>
-                  <div style={{ fontSize: 18, marginTop: 12, fontWeight: 600 }}>Start with a Layout</div>
-                  <div style={{ fontSize: 13, marginTop: 6 }}>Click "📐 Layouts" in the toolbar</div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* ── TIPS ── */}
-        <div style={S.tips}>
-          <span>💡 Pick layout → drag photos into zones</span>
-          <span>✏️ Click "Text" → click text on page to select</span>
-          <span>🖱 Drag text to reposition</span>
-          <span>📄 PDF exports ALL {pages.length} page{pages.length > 1 ? 's' : ''}</span>
         </div>
       </div>
-
-      {/* ══════════ LAYOUT PICKER MODAL ══════════ */}
-      {showLayouts && (
-        <div style={S.overlay} onClick={() => setShowLayouts(false)}>
-          <div style={S.modal} onClick={e => e.stopPropagation()}>
-            <h2 style={{ margin: '0 0 4px', fontFamily: 'Georgia', color: '#1e293b' }}>Choose Layout</h2>
-            <p style={{ margin: '0 0 20px', color: '#64748b', fontSize: 13 }}>Page {activePage + 1}</p>
-
-            <div style={S.layoutGrid}>
-              {Object.entries(LAYOUTS).map(([key, l]) => (
-                <div key={key} onClick={() => applyLayout(key)}
-                  style={{
-                    ...S.layoutCard,
-                    border: page.layoutKey === key ? '3px solid #6c5ce7' : '2px solid #e5e7eb',
-                    background: page.layoutKey === key ? '#f5f3ff' : 'white',
-                  }}>
-                  <div style={{ width: 68, height: 85, background: '#f1f5f9', borderRadius: 4, margin: '0 auto 8px', position: 'relative', overflow: 'hidden' }}>
-                    {l.zones.map((z, i) => (
-                      <div key={i} style={{
-                        position: 'absolute',
-                        left: `${z.x}%`, top: `${z.y}%`,
-                        width: `${z.w}%`, height: `${z.h}%`,
-                        background: `hsl(${220 + i * 40}, 60%, ${75 - i * 5}%)`,
-                        borderRadius: 2,
-                      }} />
-                    ))}
-                    {l.zones.length === 0 && (
-                      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#cbd5e1', fontSize: 24 }}>✦</div>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#334155' }}>{l.name}</div>
-                  <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 2 }}>{l.zones.length} photo{l.zones.length !== 1 ? 's' : ''}</div>
-                </div>
-              ))}
-            </div>
-
-            <button onClick={() => setShowLayouts(false)}
-              style={Sb('purple', { width: '100%', padding: 12, marginTop: 4, fontSize: 14 })}>
-              Done
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ══════════ STICKER PICKER MODAL ══════════ */}
-      {showStickers && (
-        <div style={S.overlay} onClick={() => setShowStickers(false)}>
-          <div style={{ ...S.modal, maxWidth: 680 }} onClick={e => e.stopPropagation()}>
-            <h2 style={{ margin: '0 0 4px', fontFamily: 'Georgia', color: '#1e293b' }}>Add Stickers & Emojis</h2>
-            <p style={{ margin: '0 0 20px', color: '#64748b', fontSize: 13 }}>Click any sticker to add it to your page</p>
-
-            <div style={{ maxHeight: '60vh', overflowY: 'auto', paddingRight: 8 }}>
-              {Object.entries(STICKER_CATEGORIES).map(([key, cat]) => (
-                <div key={key} style={{ marginBottom: 20 }}>
-                  <div style={{ fontSize: 13, fontWeight: 700, color: '#334155', marginBottom: 8, position: 'sticky', top: 0, background: 'white', padding: '4px 0', zIndex: 1 }}>
-                    {cat.name}
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(56px, 1fr))', gap: 8 }}>
-                    {cat.items.map((item, i) => (
-                      <div key={i}
-                        onClick={() => {
-                          addSticker(item, 20 + Math.random() * 30, 20 + Math.random() * 30);
-                          setShowStickers(false);
-                        }}
-                        style={{
-                          width: 56, height: 56,
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: 32, background: '#f8fafc', borderRadius: 8,
-                          cursor: 'pointer', border: '2px solid #e2e8f0',
-                          transition: 'all 0.15s', userSelect: 'none',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.1)'; e.currentTarget.style.borderColor = '#6c5ce7'; }}
-                        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
-                        {item.startsWith('http') ? (
-                          <img src={item} alt="" style={{ width: 40, height: 40, objectFit: 'contain' }} />
-                        ) : item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button onClick={() => setShowStickers(false)}
-              style={Sb('purple', { width: '100%', padding: 12, marginTop: 16, fontSize: 14 })}>
-              Done
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   DRAGGABLE TEXT ELEMENT
-══════════════════════════════════════════════════════════════════════════════ */
-function TextElement({ text, isSelected, onSelect, updateText, scale }) {
-  const startRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const onMouseDown = (e) => {
-    e.stopPropagation();
-    onSelect(text.id);
-    startRef.current = { mouseX: e.clientX, mouseY: e.clientY, textX: text.x, textY: text.y };
-    setIsDragging(true);
-
-    const move = (me) => {
-      if (!startRef.current) return;
-      const totalDx = (me.clientX - startRef.current.mouseX) / scale;
-      const totalDy = (me.clientY - startRef.current.mouseY) / scale;
-      const newX = startRef.current.textX + (totalDx / PAGE_W) * 100;
-      const newY = startRef.current.textY + (totalDy / PAGE_H) * 100;
-      updateText(text.id, {
-        x: Math.max(0, Math.min(85, newX)),
-        y: Math.max(0, Math.min(92, newY)),
-      });
-    };
-
-    const up = () => {
-      setIsDragging(false);
-      startRef.current = null;
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseup', up);
-    };
-
-    window.addEventListener('mousemove', move);
-    window.addEventListener('mouseup', up);
-  };
-
-  return (
-    <div
-      onMouseDown={onMouseDown}
-      style={{
-        position: 'absolute',
-        left: `${text.x}%`,
-        top: `${text.y}%`,
-        fontSize: text.fontSize,
-        color: text.color,
-        fontFamily: text.fontFamily,
-        fontWeight: text.bold ? 700 : 400,
-        fontStyle: text.italic ? 'italic' : 'normal',
-        textAlign: text.align || 'left',
-        cursor: isDragging ? 'grabbing' : 'grab',
-        userSelect: 'none',
-        outline: isSelected ? '2px solid #6c5ce7' : '2px solid transparent',
-        outlineOffset: 3,
-        borderRadius: 3,
-        padding: '2px 6px',
-        whiteSpace: 'pre-wrap',
-        maxWidth: '80%',
-        lineHeight: 1.35,
-        zIndex: isSelected ? 100 : 10,
-        minWidth: 40,
-        boxShadow: isSelected ? '0 0 0 4px rgba(108,92,231,0.15)' : 'none',
-      }}>
-      {text.content}
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   DRAGGABLE STICKER ELEMENT
-══════════════════════════════════════════════════════════════════════════════ */
-function StickerElement({ sticker, updateSticker, deleteSticker, scale }) {
-  const startRef = useRef(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const onMouseDown = (e) => {
-    e.stopPropagation();
-    startRef.current = { mouseX: e.clientX, mouseY: e.clientY, stickerX: sticker.x, stickerY: sticker.y };
-    setIsDragging(true);
-
-    const move = (me) => {
-      if (!startRef.current) return;
-      const totalDx = (me.clientX - startRef.current.mouseX) / scale;
-      const totalDy = (me.clientY - startRef.current.mouseY) / scale;
-      const newX = startRef.current.stickerX + (totalDx / PAGE_W) * 100;
-      const newY = startRef.current.stickerY + (totalDy / PAGE_H) * 100;
-      updateSticker(sticker.id, {
-        x: Math.max(0, Math.min(90, newX)),
-        y: Math.max(0, Math.min(90, newY)),
-      });
-    };
-
-    const up = () => {
-      setIsDragging(false);
-      startRef.current = null;
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseup', up);
-    };
-
-    window.addEventListener('mousemove', move);
-    window.addEventListener('mouseup', up);
-  };
-
-  return (
-    <div
-      onMouseDown={onMouseDown}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={{
-        position: 'absolute',
-        left: `${sticker.x}%`,
-        top: `${sticker.y}%`,
-        cursor: isDragging ? 'grabbing' : 'grab',
-        userSelect: 'none',
-        zIndex: 50,
-        transform: `rotate(${sticker.rotation || 0}deg)`,
-        transition: isDragging ? 'none' : 'transform 0.15s',
-      }}>
-      {sticker.content.startsWith('http') ? (
-        <img src={sticker.content} alt=""
-          style={{ width: sticker.size, height: sticker.size, objectFit: 'contain', pointerEvents: 'none',
-            filter: isHovered ? 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))' : 'none' }} />
-      ) : (
-        <div style={{ fontSize: sticker.size, lineHeight: 1,
-          filter: isHovered ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' : 'none' }}>
-          {sticker.content}
-        </div>
-      )}
-
-      {isHovered && (
-        <div style={{
-          position: 'absolute', top: -28, right: -8,
-          display: 'flex', gap: 4,
-          background: 'rgba(255,255,255,0.95)', padding: '4px 6px',
-          borderRadius: 6, boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          border: '1px solid #e2e8f0',
-        }}>
-          <button onMouseDown={e => { e.stopPropagation(); updateSticker(sticker.id, { size: Math.max(24, sticker.size - 8) }); }} style={miniBtn}>−</button>
-          <button onMouseDown={e => { e.stopPropagation(); updateSticker(sticker.id, { size: Math.min(120, sticker.size + 8) }); }} style={miniBtn}>+</button>
-          <button onMouseDown={e => { e.stopPropagation(); updateSticker(sticker.id, { rotation: (sticker.rotation + 15) % 360 }); }} style={miniBtn}>↻</button>
-          <button onMouseDown={e => { e.stopPropagation(); deleteSticker(sticker.id); }} style={{ ...miniBtn, color: '#dc2626' }}>×</button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-const miniBtn = {
-  all: 'unset', width: 20, height: 20,
-  display: 'flex', alignItems: 'center', justifyContent: 'center',
-  cursor: 'pointer', fontSize: 14, fontWeight: 700,
-  color: '#475569', background: 'white',
-  border: '1px solid #e2e8f0', borderRadius: 4, transition: 'all 0.15s',
-};
-
-/* ══════════════════════════════════════════════════════════════════════════════
-   STYLES
-══════════════════════════════════════════════════════════════════════════════ */
-const Sb = (variant, extra = {}) => {
-  const base = { all: 'unset', boxSizing: 'border-box', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '8px 14px', border: 'none', borderRadius: 8, cursor: 'pointer', fontSize: 13, fontWeight: 600, fontFamily: 'inherit', transition: 'opacity 0.15s', textTransform: 'none', letterSpacing: 'normal', whiteSpace: 'nowrap' };
-  const variants = {
-    purple: { background: '#6c5ce7', color: 'white' },
-    green:  { background: '#10b981', color: 'white' },
-    blue:   { background: '#3b82f6', color: 'white' },
-    orange: { background: '#f59e0b', color: 'white' },
-    pink:   { background: '#ec4899', color: 'white' },
-    dark:   { background: '#334155', color: 'white' },
-    danger: { background: '#fee2e2', color: '#dc2626' },
-    ghost:  { background: '#f1f5f9', color: '#475569' },
-  };
-  return { ...base, ...(variants[variant] || {}), ...extra };
-};
-
-const S = {
-  root:         { position: 'fixed', inset: 0, display: 'flex', fontFamily: "'Segoe UI',system-ui,sans-serif", background: '#f1f5f9', zIndex: 9999, fontSize: 14 },
-  sidebar:      { width: 248, flexShrink: 0, background: 'white', borderRight: '1px solid #e2e8f0', overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column' },
-  main:         { flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', minWidth: 0 },
-  toolbar:      { background: 'white', borderBottom: '1px solid #e2e8f0', padding: '10px 18px', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', flexShrink: 0 },
-  bgPanel:      { background: '#f8fafc', borderBottom: '1px solid #e2e8f0', padding: '8px 18px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 6, flexShrink: 0 },
-  pageTabs:     { background: '#f8fafc', borderBottom: '1px solid #e2e8f0', padding: '6px 18px', display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0, flexWrap: 'wrap' },
-  canvasArea:   { flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'flex-start', padding: '28px 20px', overflowY: 'auto', background: '#e2e8f0' },
-  page:         { width: PAGE_W, height: PAGE_H, position: 'relative', boxShadow: '0 4px 32px rgba(0,0,0,0.22)', overflow: 'hidden', flexShrink: 0 },
-  tips:         { background: '#fffbeb', borderTop: '1px solid #fde68a', padding: '7px 18px', display: 'flex', gap: 20, fontSize: 11, color: '#92400e', flexShrink: 0, flexWrap: 'wrap' },
-  sideHead:     { fontWeight: 700, fontSize: 13, color: '#1e293b', marginBottom: 2 },
-  clusterBadge: { background: '#6c5ce7', color: 'white', padding: '3px 8px', borderRadius: 4, fontSize: 11, fontWeight: 700, marginBottom: 6, display: 'inline-block' },
-  thumbGrid:    { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 5 },
-  thumb:        { width: '100%', height: 76, objectFit: 'cover', borderRadius: 5, cursor: 'grab', border: '2px solid transparent', transition: 'all 0.15s', display: 'block' },
-  textPanel:    { background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: 12, marginTop: 4 },
-  lbl:          { fontSize: 11, color: '#64748b', display: 'block', marginTop: 8, marginBottom: 3 },
-  textarea:     { width: '100%', resize: 'vertical', border: '1px solid #e2e8f0', borderRadius: 6, padding: '6px 8px', fontSize: 13, fontFamily: 'inherit', boxSizing: 'border-box' },
-  sel:          { width: '100%', padding: '5px 8px', border: '1px solid #e2e8f0', borderRadius: 6, fontSize: 13, background: 'white', cursor: 'pointer', outline: 'none', color: '#333' },
-  overlay:      { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 99999 },
-  modal:        { background: 'white', borderRadius: 16, padding: 28, maxWidth: 760, width: '92%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' },
-  layoutGrid:   { display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(120px,1fr))', gap: 12, marginBottom: 8 },
-  layoutCard:   { padding: '12px 8px', borderRadius: 10, cursor: 'pointer', textAlign: 'center', transition: 'all 0.15s' },
-};

@@ -23,15 +23,19 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import Body, File, Form, HTTPException, UploadFile
 from fastapi import FastAPI
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 from sklearn.cluster import DBSCAN
 
 import cluster_engine as ml
+from ai_generator import auto_generate_book, select_best_photo
 from caption_engine import generate_all_event_names
 from metadata_engine import extract_metadata, same_event as metadata_same_event
 from ml_cache import get_cached_ml, save_ml_to_cache, get_cache_stats
+from progress_engine import save_progress, load_progress
 from yolo_engine import detect_objects, extract_cnn_features
+from outfit_engine import get_outfit_signature, is_same_outfit
 
 load_dotenv()
 
@@ -55,6 +59,14 @@ cloudinary.config(
 BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
 DB_PHOTOS = os.path.join(BASE_DIR, "database.json")
 DB_USERS  = os.path.join(BASE_DIR, "users.json")
+
+
+# ── Pydantic Models ───────────────────────────────────────────────────────────
+
+class ProgressPayload(BaseModel):
+    username: str
+    book_id: str
+    pages: list
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
@@ -319,6 +331,7 @@ async def upload_photos(
 
             if cached:
                 cache_hits += 1
+                outfit_sig = get_outfit_signature(img_np)
                 print(f"  [{idx+1}/{len(files)}] {file.filename} → "
                       f"CACHE HIT ✓ | {dt_str} | {gps_str} | "
                       f"scene={scene_result['scene_type']}")
@@ -328,6 +341,7 @@ async def upload_photos(
                     "embeddings":   cached["embeddings"],
                     "cnn_features": cached.get("cnn_features",
                                                np.zeros(464).tolist()),
+                    "outfit_sig":   outfit_sig.tolist(),
                     "face_count":   len(cached["embeddings"]),
                     "meta":         meta,
                     "yolo":         scene_result,
@@ -338,6 +352,7 @@ async def upload_photos(
             face_data     = ml.get_face_embeddings(img_np)
             embeddings    = [f["embedding"] for f in face_data]
             cnn_features  = extract_cnn_features(img_np)
+            outfit_sig    = get_outfit_signature(img_np)
 
             buf = io.BytesIO()
             pil_rgb.save(buf, format="JPEG", quality=90)
@@ -352,6 +367,7 @@ async def upload_photos(
                 "filename":     file.filename,
                 "embeddings":   embeddings,
                 "cnn_features": cnn_features.tolist(),
+                "outfit_sig":   outfit_sig.tolist(),
                 "face_count":   len(embeddings),
                 "meta":         meta,
                 "yolo":         scene_result,
@@ -368,35 +384,75 @@ async def upload_photos(
     if not processed:
         return {"status": "error", "message": "No photos could be processed"}
 
-    # ── STEP 2: Metadata clustering ────────────────────────────────────────────
-    print(f"\nSTEP 2: Metadata clustering (same date + 8km GPS)\n")
+    # ── STEP 1.5: Outfit-first clustering ──────────────────────────────────────
+    print(f"STEP 1.5: Outfit-first clustering (primary grouping)\n")
+
+    outfit_sigs = [np.array(p["outfit_sig"]) for p in processed]
+    outfit_clusters = {}  # outfit_cluster_id -> [photo_indices]
+    outfit_id = 0
+    matched_photos = set()
+
+    # Greedy outfit clustering: match each unmatched photo to existing outfits
+    for i in range(len(processed)):
+        if i in matched_photos:
+            continue
+
+        # Start new outfit cluster with this photo
+        outfit_clusters[outfit_id] = [i]
+        matched_photos.add(i)
+
+        # Find all other photos with same outfit (threshold=0.15 = strict matching)
+        for j in range(i + 1, len(processed)):
+            if j in matched_photos:
+                continue
+            if is_same_outfit(outfit_sigs[i], outfit_sigs[j], threshold=0.15):
+                outfit_clusters[outfit_id].append(j)
+                matched_photos.add(j)
+
+        outfit_id += 1
+
+    print(f"  Outfit groups: {len(outfit_clusters)}")
+    for oid, photos in outfit_clusters.items():
+        dates = [processed[idx]["meta"]["datetime"] for idx in photos 
+                 if processed[idx]["meta"]["datetime"]]
+        date_str = f"{dates[0].date()}" if dates else "no date"
+        print(f"    Outfit {oid}: {len(photos)} photo(s) | first seen: {date_str}")
+
+    # ── STEP 2: Within each outfit, cluster by metadata (time + GPS) ──────────
+    print(f"\nSTEP 2: Within outfits, cluster by time + GPS\n")
 
     meta_clusters = []
     no_meta       = []
 
-    for photo_idx, photo in enumerate(processed):
-        meta = photo["meta"]
-        if not meta["datetime"]:
-            no_meta.append(photo_idx)
-            continue
+    # For each outfit group, apply metadata clustering
+    for outfit_id, outfit_photos in outfit_clusters.items():
+        outfit_meta_clusters = []
 
-        matched = None
-        for cluster in meta_clusters:
-            if metadata_same_event(meta, cluster["anchor_meta"],
-                                   time_thresh_hrs=8.0,
-                                   gps_thresh_km=8.0):
-                matched = cluster
-                break
+        for photo_idx in outfit_photos:
+            meta = processed[photo_idx]["meta"]
+            if not meta["datetime"]:
+                no_meta.append(photo_idx)
+                continue
 
-        if matched:
-            matched["photos"].append(photo_idx)
-        else:
-            meta_clusters.append({
-                "photos":      [photo_idx],
-                "anchor_meta": meta,
-            })
+            matched = None
+            for cluster in outfit_meta_clusters:
+                if metadata_same_event(meta, cluster["anchor_meta"],
+                                       time_thresh_hrs=8.0,
+                                       gps_thresh_km=8.0):
+                    matched = cluster
+                    break
 
-    print(f"  Metadata clusters: {len(meta_clusters)} | "
+            if matched:
+                matched["photos"].append(photo_idx)
+            else:
+                outfit_meta_clusters.append({
+                    "photos":      [photo_idx],
+                    "anchor_meta": meta,
+                })
+
+        meta_clusters.extend(outfit_meta_clusters)
+
+    print(f"  Time+GPS clusters (within outfits): {len(meta_clusters)} | "
           f"No metadata: {len(no_meta)}")
 
     # ── STEP 3: DBSCAN on CNN visual embeddings ────────────────────────────────
@@ -410,9 +466,15 @@ async def upload_photos(
           f"{len(set(cnn_labels)) - (1 if -1 in cnn_labels else 0)}")
 
     # ── STEP 4: Keep metadata clusters intact ─────────────────────────────────
-    print(f"\nSTEP 4: Building base clusters (metadata intact)\n")
+    print(f"\nSTEP 4: Building base clusters (outfit+metadata intact)\n")
 
     final_clusters = [mc["photos"] for mc in meta_clusters]
+    
+    # Create reverse map: photo_idx -> outfit_id
+    photo_to_outfit = {}
+    for oid, photos in outfit_clusters.items():
+        for pidx in photos:
+            photo_to_outfit[pidx] = oid
 
     if no_meta:
         no_meta_set = set(no_meta)
@@ -423,17 +485,18 @@ async def upload_photos(
         for cnn_group in cnn_no_meta.values():
             merged = False
             for fc in final_clusters:
-                fc_cnn = [cnn_labels[i] for i in fc if i not in no_meta_set]
-                if fc_cnn and max(set(fc_cnn), key=fc_cnn.count) == \
-                              cnn_labels[cnn_group[0]]:
+                # Only merge if same outfit
+                fc_outfit = photo_to_outfit.get(fc[0], -1)
+                cnn_outfit = photo_to_outfit.get(cnn_group[0], -1)
+                if fc_outfit != -1 and cnn_outfit != -1 and fc_outfit == cnn_outfit:
                     fc.extend(cnn_group)
                     merged = True
                     break
             if not merged:
                 final_clusters.append(cnn_group)
 
-    # ── STEP 4.5: Merge clusters sharing primary person + same date ────────────
-    print(f"\nSTEP 4.5: Primary-person same-day merge\n")
+    # ── STEP 4.5: Merge clusters sharing primary person + same date + same outfit
+    print(f"\nSTEP 4.5: Primary-person same-day merge (same outfit)\n")
 
     all_emb_temp = []
     all_idx_temp = []
@@ -472,6 +535,12 @@ async def upload_photos(
                            not (set(g2) & primary_set):
                             continue
 
+                        # ✓ CHECK: Only merge if SAME OUTFIT
+                        g1_outfit = photo_to_outfit.get(g1[0], -1)
+                        g2_outfit = photo_to_outfit.get(g2[0], -1)
+                        if g1_outfit == -1 or g2_outfit == -1 or g1_outfit != g2_outfit:
+                            continue
+
                         dt1 = next((processed[idx]["meta"]["datetime"]
                                     for idx in g1
                                     if processed[idx]["meta"]["datetime"]),
@@ -486,7 +555,7 @@ async def upload_photos(
                             used.add(j)
                             merged_any = True
                             print(f"  Merged {i}+{j} "
-                                  f"(primary person, {dt1.date()})")
+                                  f"(primary person, same outfit, {dt1.date()})")
 
                     new_clusters.append(merged)
                     used.add(i)
@@ -551,7 +620,7 @@ async def upload_photos(
 
         for idx in faceless_photos:
             sim = cosine_sim(processed[idx]["cnn_features"], face_cnn_avg)
-            if sim >= 0.80:
+            if sim >= 0.70:  # Lowered from 0.80 for better grouping
                 keep_with_event.append(idx)
             else:
                 send_to_extras.append(idx)
@@ -578,29 +647,58 @@ async def upload_photos(
     if clusters:
         print(f"\nSTEP 7: Naming {len(clusters)} cluster(s)...\n")
         try:
-            clusters = generate_all_event_names(
-                clusters,
-                cluster_yolo_labels=cluster_yolo_labels,
-            )
+            clusters = generate_all_event_names(clusters)
         except Exception as e:
             print(f"  Naming skipped: {e}")
 
+    # ── STEP 7.5: AI Select best photo from each event ────────────────────────
+    print(f"\nSTEP 7.5: Selecting best photo from each event using AI...\n")
+    
+    clusters_with_best = {}
+    for event_name, urls in clusters.items():
+        if not urls:
+            clusters_with_best[event_name] = {
+                "photos": [],
+                "best_photo": None,
+                "best_photo_score": 0.0
+            }
+            continue
+        
+        best_url, best_score = select_best_photo(urls)
+        
+        clusters_with_best[event_name] = {
+            "photos": urls,
+            "best_photo": best_url,
+            "best_photo_score": best_score
+        }
+        
+        print(f"  {event_name}: Selected best photo (score: {best_score:.3f})")
+    
+    # Flatten back to simple structure for database (but keep best_photo info)
+    final_clusters_data = {}
+    for event_name, data in clusters_with_best.items():
+        final_clusters_data[event_name] = {
+            "photos": data["photos"],
+            "best_photo": data["best_photo"],
+            "best_photo_score": data["best_photo_score"]
+        }
+
     # ── Save into specific book ────────────────────────────────────────────────
-    user["books"][book_id]["clusters"]   = clusters
+    user["books"][book_id]["clusters"]   = final_clusters_data
     user["books"][book_id]["extras"]     = extras
     user["books"][book_id]["updated_at"] = now_str()
     save_user_db(username, user)
 
     print(f"\n{'=' * 70}")
     print(f"SAVED → book '{user['books'][book_id]['name']}' ({book_id})")
-    print(f"  Events: {len(clusters)} | Extras: {len(extras)}")
+    print(f"  Events: {len(final_clusters_data)} | Extras: {len(extras)}")
     print(f"{'=' * 70}\n")
 
     return {
         "status":  "success",
         "book_id": book_id,
         "name":    user["books"][book_id]["name"],
-        "data":    {"clusters": clusters, "extras": extras},
+        "data":    {"clusters": final_clusters_data, "extras": extras},
     }
 
 
@@ -617,6 +715,106 @@ def get_photos(username: str):
     latest = max(books.values(), key=lambda b: b.get("updated_at", ""))
     return {"clusters": latest.get("clusters", {}),
             "extras":   latest.get("extras", [])}
+
+
+# ── Auto-generate & Progress Endpoints ────────────────────────────────────────
+
+@app.post("/auto-generate")
+def auto_generate(username: str, book_id: str):
+    """Auto-generate editor pages from a book's clustered photos."""
+    user = get_user_db(username)
+    book = user["books"].get(book_id)
+
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+
+    clusters = book.get("clusters", {})
+    extras   = book.get("extras", [])
+
+    # Layout mapping: number of photos → best layout
+    layout_map = {
+        1: "heroFull",
+        2: "twoVertical",
+        3: "threeVertical",
+        4: "fourGrid",
+        5: "sixGrid",  # Use 6-layout, will only show 5
+        6: "sixGrid",
+    }
+
+    pages = []
+
+    for event_name, cluster_data in clusters.items():
+        # Handle both old (list) and new (dict with metadata) formats
+        if isinstance(cluster_data, dict) and "photos" in cluster_data:
+            urls = cluster_data["photos"]
+            best_photo = cluster_data.get("best_photo")
+        else:
+            urls = cluster_data if isinstance(cluster_data, list) else []
+            best_photo = None
+        
+        if not urls:
+            continue
+
+        # Group all photos of this event smartly
+        num_photos = len(urls)
+        
+        if num_photos <= 6:
+            # Fits in single page
+            layout = layout_map.get(num_photos, "sixGrid")
+            pages.append({
+                "layout":    layout,
+                "photos":    urls,
+                "best_photo": best_photo,
+                "texts":     [{"content": event_name, "x": 5, "y": 5, "fontSize": 26, "color": "#ffffff"}],
+                "stickers":  [],
+                "bg_color":  "#1a1a2e",
+            })
+        else:
+            # Multiple pages: 6 per page
+            for i in range(0, num_photos, 6):
+                chunk = urls[i:i+6]
+                is_first = (i == 0)
+                pages.append({
+                    "layout":    "sixGrid",
+                    "photos":    chunk,
+                    "best_photo": best_photo if is_first else None,
+                    "texts":     [{"content": event_name, "x": 5, "y": 5, "fontSize": 26, "color": "#ffffff"}] if is_first else [],
+                    "stickers":  [],
+                    "bg_color":  "#1a1a2e",
+                })
+
+    # Extras page
+    if extras:
+        num_extra = len(extras)
+        
+        # Group extras into pages: 6 per page
+        for i in range(0, num_extra, 6):
+            chunk = extras[i:i+6]
+            chunk_size = len(chunk)
+            layout = layout_map.get(chunk_size, "sixGrid")
+            
+            pages.append({
+                "layout":   layout,
+                "photos":   chunk,
+                "texts":    [{"content": "More Memories", "x": 5, "y": 5, "fontSize": 18, "color": "#555555"}],
+                "stickers": [],
+                "bg_color": "#fdf8f0",
+            })
+
+    print(f"  Auto-generated {len(pages)} pages for book '{book.get('name')}' ({book_id})")
+
+    return {"status": "success", "pages": pages}
+
+
+@app.post("/save-progress")
+def save_prog(payload: ProgressPayload):
+    save_progress(payload.username, payload.book_id, payload.pages)
+    return {"status": "saved"}
+
+
+@app.get("/load-progress/{username}/{book_id}")
+def load_prog(username: str, book_id: str):
+    return load_progress(username, book_id)
 
 
 # ── Other Endpoints ────────────────────────────────────────────────────────────
